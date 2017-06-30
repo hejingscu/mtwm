@@ -21,7 +21,7 @@
 
 		<div class="panel-box">
 			<div class="panel-title"><i class="icon-calendar"></i>数据列表<div style="float: right;">
-                    <span class="btn-export" @click="toggleModal()"><i class="fa fa-plus"></i>添加店铺</span>
+                    <span class="btn-export" @click="toggleModal('add')"><i class="fa fa-plus"></i>添加店铺</span>
                 </div></div>
 			<div class="panel-body">
 				<table class="table table-striped table-bordered table-hover">
@@ -35,7 +35,7 @@
 		                </tr>
 	                </thead>
 	                <tbody>
-	                    <tr v-for="(item, index) in shopData.list">
+	                    <tr v-for="(item, index) in shopData">
 	                    	<td>{{item.name}}</td>
 	                    	<td>{{item.time}}</td>
 	                    	<td>
@@ -76,9 +76,11 @@
 <script>
 import pagination from '../components/pagination.vue'
 import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
+import { getShop,addShop } from '../service/getData'
 export default{
 	data() {
 		return {
+			shopData: [],
 			filterOption: {
 				startDate: '',
 				endDate: ''
@@ -86,16 +88,7 @@ export default{
 			modalData: {name: ''},
 			opType: 'add',//弹窗 添加or修改or删除
 			showModalFlg: false,
-			showDeleteFlg: false,
-			shopData:{
-				list: [{
-					name: 'shop1',
-					time: 1818181
-				},{
-					name: 'shop2',
-					time: 65546879678
-				}]
-			}
+			showDeleteFlg: false
 		}
     },
     methods:{
@@ -119,14 +112,21 @@ export default{
 	    	this.modalData = this.littleCopy(item, ['name'])
 	    },
 	    //提交数据
-	    submit(){
+	    async submit(){
 	    	if(this.opType == 'modify'){
 	    		
 	    	}else if(this.opType == 'add'){
-	    		
+	    		let res = await addShop(this.modalData);
+	    		this.showModalFlg = !this.showModalFlg
+	    		this.getList()
 	    	}else{
 	    		
 	    	}
+	    },
+	    getList(){
+	    	getShop().then( res => {
+	    		this.shopData = res
+	    	})
 	    }
 	},
     components:{
@@ -134,6 +134,7 @@ export default{
         'pagination': pagination
     },
     created: function(){
+    	this.getList()
     }
 }
 </script>
