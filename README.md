@@ -1,30 +1,11 @@
-# mtwm
+仿美团外卖学习项目，自用学习作品
+数据库由本地mongodb支持，无线上服务
 
-> A Vue.js project
+cnpm install  安装依赖
 
-## Build Setup
+mongod --dbpath=D:\mongodb\db  启动本地数据库
 
-``` bash
-# install dependencies
-npm install
+cnpm run start  启动node
+cnpm run dev  开发模式
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+cnpm run build  线上打包
