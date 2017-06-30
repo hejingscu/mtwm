@@ -50,7 +50,7 @@ module.exports = {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
         query: {
-          limit: 100,
+          limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
@@ -61,19 +61,13 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      },
-      {
-        test   : /\.css$/,
-        loaders: ['style-loader', 'css-loader'/*, 'resolve-url-loader'*/]
-      }, {
-        test   : /\.scss$/,
-        loaders: ['style-loader', 'css-loader',/*, 'resolve-url-loader'*/ 'sass-loader?sourceMap']
       }
     ]
   },
   plugins: [
       new webpack.ProvidePlugin({
-          $: "n-zepto"
+          $: "jquery",
+          jQuery: "jquery"
       })
    ]
 }

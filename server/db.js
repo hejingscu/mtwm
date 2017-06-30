@@ -2,31 +2,36 @@ const mongoose = require('mongoose')
 const init = require('./init.json')
 const Schema = mongoose.Schema
 
-const userSchema = new Schema({
-  name: String,
-  pwd: String
+const ShopSchema = new Schema({
+  name: String
 })
 
-const articleSchema = new Schema({
-  title: String,
-  date: Date,
-  content: String
-})
+// const userSchema = new Schema({
+//   name: String,
+//   pwd: String
+// })
 
-const linkSchema = new Schema({
-  name: String,
-  href: String
-})
+// const articleSchema = new Schema({
+//   title: String,
+//   date: Date,
+//   content: String
+// })
+
+// const linkSchema = new Schema({
+//   name: String,
+//   href: String
+// })
 
 const Models = {
-  User: mongoose.model('User', userSchema),
-  Article: mongoose.model('Article', articleSchema),
-  Link: mongoose.model('Link', linkSchema),
+  // User: mongoose.model('User', userSchema),
+  // Article: mongoose.model('Article', articleSchema),
+  // Link: mongoose.model('Link', linkSchema),
+  Shop: mongoose.model('Shop', ShopSchema),
   initialized: false
 }
 
 const initialize = function () {
-  Models.User.find(null, function (err, doc) {
+  Models.Shop.find(null, function (err, doc) {
     if (err) {
       console.log(err)
     } else if (!doc.length) {
@@ -40,7 +45,8 @@ const initialize = function () {
   })
 }
 
-mongoose.connect('mongodb://127.0.0.1/CMS2')
+//mongoose.connect('mongodb://127.0.0.1/CMS2')
+mongoose.connect('mongodb://127.0.0.1/mtwm')
 // mongoose.set('debug', true)
 
 const db = mongoose.connection
