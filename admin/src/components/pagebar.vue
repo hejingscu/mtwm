@@ -1,6 +1,7 @@
 <template lang="html">
   <div class="page-bar">
       <a href="javascript:;">首页</a>
+      <span v-if="getParentBarNode.text"><i class="fa fa-circle"></i><a v-bind:href="getParentBarNode.url">{{getParentBarNode.text}}</a></span>
       <i class="fa fa-circle"></i><a href="javascript:;">{{name}}</a>
   </div>
 </template>
@@ -14,18 +15,20 @@ export default {
         name: this.$route.name
       }
     },
+    computed: {
+        ...mapGetters(['getParentBarNode'])
+    },
     mounted(){
 
     },
     created: function(){
-      // router.beforeEach((to, from, next) => {
-      //   if(to.path !== from.name){this.name = to.name}
-      //     if(this.getParentBarNode.text){
-      //       this.$store.dispatch("clearParentBarNode")
-      //     }
-      //     next()
-      // })
-      console.log(this.$route)
+      router.beforeEach((to, from, next) => {
+        if(to.path !== from.name){this.name = to.name}
+          if(this.getParentBarNode.text){
+            this.$store.dispatch("clearParentBarNode")
+          }
+          next()
+      })
     },
     watch: {
       

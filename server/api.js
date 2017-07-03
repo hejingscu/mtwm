@@ -34,4 +34,31 @@ router.post('/mtwm-admin/shop/add', (req, res) => {
   })
 })
 
+router.put('/mtwm-admin/shop/edit', (req, res) => {
+  const postData = req.body
+  const id = req.body._id;
+  delete postData._id;
+  db.Shop.update({_id: id},postData, (err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      console.log(doc)
+      res.send(JSON.stringify(doc))
+    }
+  })
+})
+
+
+router.delete('/mtwm-admin/shop/delete/:id', (req, res) => {
+  const id = req.param('id');
+  db.Shop.remove({_id: id}, (err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      res.send(JSON.stringify(doc))
+    }
+  })
+})
+
+
 module.exports = router

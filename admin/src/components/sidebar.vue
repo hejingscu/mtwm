@@ -78,6 +78,7 @@ export default {
       }
     },
     created: function(){
+      console.log(this.$route)
       this.createFun()
     },
     watch: {

@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import components from './components/' //加载公共组件
-//import store from './vuex/store.js'
+import store from './vuex/store.js'
 import filter from './utils/filter'
 import core from './utils/core'
 import iView from 'iview'
@@ -24,7 +24,7 @@ Object.keys(components).forEach((key) => {
 new Vue({
   el: '#app',
   router,
-  //store,
+  store,
   template: '<App/>',
   components: { App }
 })

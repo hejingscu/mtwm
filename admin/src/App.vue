@@ -6,7 +6,7 @@
       <img src="./img/loading.gif" alt="">
     </div>
     <div class="page" style="font-size: 13px;height: 100%;">
-      <div style="min-height: 920px;">
+      <div style="min-height: 920px;position: relative;">
         <page-bar></page-bar>
         <router-view style="margin-top: 20px;"></router-view>
       </div>
@@ -277,5 +277,16 @@ a{
 }
 .ui-dropdown{
   position: relative;
+}
+
+//子页面，通过z-index将母页面遮挡住
+.child-page{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 202;
+  background: #f4f4f4;
 }
 </style>
