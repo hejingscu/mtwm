@@ -1,10 +1,12 @@
 [
   {
     "type": "Shop",
-    "name": "shop1"
+    "name": "shop1",
+    "updateTime": 0
   },
   {
     "type": "Shop",
-    "name": "shop2"
+    "name": "shop2",
+    "updateTime": 0
   }
 ]

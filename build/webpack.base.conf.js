@@ -20,7 +20,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.json', '.css', '.scss'],
     modules: [
       resolve('src'),
       resolve('node_modules')
@@ -64,10 +64,12 @@ module.exports = {
       },
       {
         test   : /\.css$/,
-        loaders: ['style-loader', 'css-loader'/*, 'resolve-url-loader'*/]
+        loader: ['style-loader', 'css-loader'/*, 'resolve-url-loader'*/],
+        include: [resolve('src'), resolve('test')]
       }, {
         test   : /\.scss$/,
-        loaders: ['style-loader', 'css-loader',/*, 'resolve-url-loader'*/ 'sass-loader?sourceMap']
+        loader: ['style-loader', 'css-loader',/*, 'resolve-url-loader'*/ 'sass-loader?sourceMap'],
+        include: [resolve('src'), resolve('test')]
       }
     ]
   },

@@ -7,12 +7,16 @@ import components from './components/' //加载公共组件
 import filter from './utils/filter'
 import core from './utils/core'
 
+import Mint from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(Mint);
 
 Vue.config.productionTip = false
 
 Object.keys(components).forEach((key) => {
     var name = key.replace(/(\w)/, (v) => v.toUpperCase()) //首字母大写
     Vue.component(`${name}`, components[key])
+    console.log(name)
 })
 
 /* eslint-disable no-new */

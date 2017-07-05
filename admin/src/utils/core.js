@@ -53,11 +53,17 @@ Vue.prototype.copy = function(obj){
 //局部复制
 Vue.prototype.littleCopy = function(obj, option){
     var newobj = {};
+    //遍历对象key，复制需要的key
     for ( var attr in obj) {
         if(option.indexOf(attr) !== -1){
             newobj[attr] = obj[attr];
         }
     }
+    //遍历需要的key，局部复制完成后，给在源对象中不存在单需要的key赋空值
+    option.forEach( item => {
+        if(!obj[item])
+            newobj[item] = ''
+    })
     return newobj;
 }
 

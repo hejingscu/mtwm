@@ -2,7 +2,37 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+    <!-- viewport 后面加上 minimal-ui 在safri 体现效果 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 隐藏状态栏/设置状态栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
     <title>mtwm</title>
+    <style>
+    html{background: #f4f4f4;}
+    </style>
+    <script type="text/javascript">
+        (function (doc, win) {
+         var docEl = doc.documentElement,
+             resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+             recalc = function () {
+                 var clientWidth = docEl.clientWidth;
+                 if (!clientWidth) return;
+                 if(clientWidth>=640){
+                     docEl.style.fontSize = '100px';
+                 }else{
+                     docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                 }
+             };
+         if (!doc.addEventListener) return;
+         win.addEventListener(resizeEvt, recalc, false);
+         doc.addEventListener('DOMContentLoaded', recalc, false);
+     })(document, window);
+    </script>
   </head>
   <body>
     <div id="app"></div>

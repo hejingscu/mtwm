@@ -3,30 +3,30 @@ const init = require('./init.json')
 const Schema = mongoose.Schema
 
 const ShopSchema = new Schema({
-  name: String
+  name: String,
+  updateTime: Number,
+  icon: String
 })
 
-// const userSchema = new Schema({
-//   name: String,
-//   pwd: String
-// })
+const bannerSchema = new Schema({
+  img: String,
+  updateTime: Number,
+  remark: String
+})
 
-// const articleSchema = new Schema({
-//   title: String,
-//   date: Date,
-//   content: String
-// })
-
-// const linkSchema = new Schema({
-//   name: String,
-//   href: String
-// })
+const categorySchema = new Schema({
+  icon: String,
+  updateTime: Number,
+  name: String
+})
 
 const Models = {
   // User: mongoose.model('User', userSchema),
   // Article: mongoose.model('Article', articleSchema),
   // Link: mongoose.model('Link', linkSchema),
   Shop: mongoose.model('Shop', ShopSchema),
+  Banner: mongoose.model('Banner', bannerSchema),
+  Category: mongoose.model('Category', categorySchema),
   initialized: false
 }
 

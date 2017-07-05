@@ -30,7 +30,9 @@ export default {
       return {
             navList: [
               { url: '#/index', text: '主页', isOpen: false},
-              { url: '#/shop', text: '店铺管理', isOpen: false}
+              { url: '#/shop', text: '店铺管理', isOpen: false},
+              { url: '#/banner', text: 'banner管理', isOpen: false},
+              { url: '#/category', text: '类目管理', isOpen: false}
             ],
             currentItem: {}
       }
