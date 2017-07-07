@@ -51,7 +51,7 @@
 
 		</div>
 
-		<Modal v-model="showModalFlg" :mask-closable="false">
+		<Modal v-model="showModalFlg" :mask-closable="false" width="800">
 			<div class="ivu-modal-header"><div class="ivu-modal-header-inner">{{modalTitle}}banner</div></div>
 	        <div style="font-size: 14px;margin-top: 20px;">
 	        	<div class="col-md-12 form-group">
@@ -63,7 +63,7 @@
 	        	<div class="col-md-12 form-group">
 					<label for="" class="control-label col-md-3">banner图片<span class="required">*</span></label>
 					<div class="fr col-md-9">
-						<upload :keyname="'modalData.img'" :img="modalData.img"></upload>
+						<upload :keyname="'modalData.img'" :img="modalData.img" :width="384" :height="92"></upload>
 					</div>
 				</div>
 	        </div>

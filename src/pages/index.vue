@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" style="font-size: .26rem;">
     <div class="banner">
       <swiper>
         <swiper-slide v-for="item in bannerData">
@@ -7,11 +7,18 @@
         </swiper-slide>
       </swiper>
     </div>
-    <div class="block-category">
+    <div class="block-category" id="category" style="position: relative;z-index: 101;">
       <div v-for="item in categoryData" class="item-category">
-        <img :src="item.icon" alt="">
-        <div>{{item.name}}</div>
+        <div class="item-inner">
+          <img :src="item.icon" alt="">
+          <div>{{item.name}}</div>
+        </div>
       </div>
+    </div>
+    <div class="block-shop">
+      <div class="block-title text-center" id="blockShopTitle" style="position: relative;z-index: 101;">附近商家</div>
+      <searchOption @getshop="getShop" ></searchOption>
+      <shopList :data="shopData"></shopList>
     </div>
   </div>
 </template>
@@ -19,7 +26,7 @@
 <script>
 import { getShop,getBanner,getCategory } from '../service/getData'
 import { Indicator  } from 'mint-ui';
-import { swiper, swiperSlide, swiperPlugins } from 'vue-awesome-swiper'   
+import { swiper, swiperSlide, swiperPlugins } from 'vue-awesome-swiper'
 export default {
   data () {
     return {
@@ -30,21 +37,25 @@ export default {
   },
   components: {swiper, swiperSlide},
   methods:{
-    getData(){
+    getMain(){
       getBanner().then( res => {
         this.bannerData = res.data
       })
-      getShop().then( res => {
-        this.shopData = res.data
-      })
       getCategory().then( res => {
         this.categoryData = res.data
+      })
+    },
+    getShop(option){
+      console.log(option)
+      getShop().then( res => {
+        this.shopData = res.data
       })
     }
   },
   created: function(){
     // Indicator.open()
-  	this.getData()
+  	this.getMain()
+    this.getShop()
   }
 }
 </script>
@@ -57,15 +68,33 @@ export default {
       height: 100%;
     }
   }
+  .block-title{
+    height: .8rem;
+    line-height: .8rem;
+    border-bottom: 1px solid #eee;
+  }
   .block-category{
+    background: #fff;
+    margin-bottom: .2rem;
+    display: flex;
+    flex-flow: row wrap;
     .item-category{
       width: 25%;
-      float: left;
-      height: 1rem;
+      //float: left;
+      height: 1.7rem;
+      padding: .3rem;
+      .item-inner{
+        text-align: center;
+        font-size: .26rem;
+      }
       img{
-        width: .5rem;
-        height: .5rem;
+        width: .7rem;
+        height: .7rem;
       }
     }
+  }
+  .block-shop{
+    background: #fff;
+    margin-bottom: .2rem;
   }
 </style>

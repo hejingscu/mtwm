@@ -1,7 +1,7 @@
 import axios from 'axios'
 import fetch from '../config/fetch'
 
-const baseUrl = 'http://localhost:3000/mtwm/'//开发环境
+const baseUrl = 'http://10.200.4.140:3000/mtwm/'//开发环境
 				//'/'//生产环境
 
 export const getQiniuToken = params => axios.get('/house/qiniu/test');

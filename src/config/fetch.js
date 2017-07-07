@@ -1,4 +1,4 @@
-import axios from 'axios'
+
 
 export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 	type = type.toUpperCase();
@@ -17,11 +17,13 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 
 	if (window.fetch && method == 'fetch') {
 		let requestConfig = {
+			credentials: 'include',
 			method: type,
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
+			mode: "cors",
 			cache: "force-cache"
 		}
 

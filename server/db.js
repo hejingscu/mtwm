@@ -5,7 +5,10 @@ const Schema = mongoose.Schema
 const ShopSchema = new Schema({
   name: String,
   updateTime: Number,
-  icon: String
+  icon: String,
+  discount: String,
+  priceStart: Number,
+  score: Number
 })
 
 const bannerSchema = new Schema({

@@ -8,7 +8,7 @@
       <div id="html5_1bk65h2si15cevak1ups1h5f1q5t3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1bk65h2si15cevak1ups1h5f1q5t3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div></div>
       <div style="border: 1px solid #eee;display: inline-block;float: right;">
         <!-- <img v-if="src !== ''" :src="src" alt="" width="150" height="150"> -->
-        <img :src="img" alt="" width="150" height="150">
+        <img :src="img" alt="" :width="width" :height="height">
       </div>
     </div>
 </template>
@@ -30,6 +30,14 @@ import { getQiniuToken } from '../service/getData'
       img: {
         type: String,
         default: ''
+      },
+      width: {
+        type: Number,
+        default: 150
+      },
+      height: {
+        type: Number,
+        default: 150
       }
     },
     data() {

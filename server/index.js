@@ -17,9 +17,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(cors({
-    origin:['http://localhost:8001','http://localhost:8002','http://10.200.4.140'],
+    origin:['http://localhost:8001','http://localhost:8002','http://10.200.4.140:8001','http://10.200.4.140:8002','http://10.200.4.140'],
     methods:['GET','POST','PUT','DELETE'],
-    alloweHeaders:['Conten-Type', 'Authorization']
+    alloweHeaders:['Content-Type','Content-Length', 'Authorization', 'Accept','X-Requested-With']
 }));
 app.use('/dist', express.static(resolve('../dist')))
 app.use(api)

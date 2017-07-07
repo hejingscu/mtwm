@@ -19,6 +19,12 @@ export const editShop = params => axios.put(adminUrl + 'shop/edit', params);
 
 export const deleteShop = params => axios.delete(adminUrl + 'shop/delete/' + params._id);
 
+//配置商家信息
+
+export const getShopManage = params => axios.get(adminUrl + 'shop/manage/' + params.id);
+
+export const editShopManage = params => axios.put(adminUrl + 'shop/manage/edit', params);
+
 //banner管理
 
 export const getBanner = params => axios.get(baseUrl + 'banner/list', params);

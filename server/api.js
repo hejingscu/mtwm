@@ -58,7 +58,18 @@ router.delete('/mtwm-admin/shop/delete/:id', (req, res) => {
     }
   })
 })
-
+//配置商家信息
+router.get('/mtwm-admin/shop/manage/:id', (req, res) => {
+  const id = req.param('id');
+  console.log(id)
+  db.Shop.find({_id: id}, 'priceStart score discount', (err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      res.send(JSON.stringify(doc)[0])
+    }
+  })
+})
 //banner管理
 router.get('/mtwm/banner/list', (req, res) => {
   var params = null;
@@ -93,7 +104,7 @@ router.put('/mtwm-admin/banner/edit', (req, res) => {
   const id = req.body._id;
   postData.updateTime = new Date().getTime()
   delete postData._id;
-  db.Shop.update({_id: id},postData, (err, doc) => {
+  db.Banner.update({_id: id},postData, (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
@@ -104,7 +115,7 @@ router.put('/mtwm-admin/banner/edit', (req, res) => {
 })
 router.delete('/mtwm-admin/banner/delete/:id', (req, res) => {
   const id = req.param('id');
-  db.Shop.remove({_id: id}, (err, doc) => {
+  db.Banner.remove({_id: id}, (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {

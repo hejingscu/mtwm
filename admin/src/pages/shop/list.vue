@@ -43,6 +43,7 @@
 	                    	<td>
 	                    		<a href="javascript:;" @click="toggleModal('modify', item)">修改</a>
 	                    		<a href="javascript:;" @click="deleteItem('delete', item)">删除</a>
+	                    		<router-link :to="{ path: '/shop/manage', query: { id: item._id }}">配置商家信息</router-link>
 	                    	</td>
 	                    </tr>
 	                </tbody>

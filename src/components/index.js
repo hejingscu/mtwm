@@ -1,2 +1,3 @@
-// import TrcPopup from './trc-popup'
-// export default { TrcPopup }
+import shopList from './shopList'
+import searchOption from './searchOption'
+export default { shopList,searchOption }
