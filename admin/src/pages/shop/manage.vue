@@ -23,7 +23,7 @@
   }
 </style>
 <script>
-import { getShopManage } from '../../service/getData'
+import { getShopManage, editShopManage } from '../../service/getData'
 export default{
   data() {
     return {
@@ -31,13 +31,20 @@ export default{
     }
   },
   methods: {
-    submit(){
-
+    async submit(){
+      let res = await editShopManage(this.formData);
+      this.$Notice.success({title: '修改成功'});
+      this.getList()
+    },
+    getList(){
+      let that = this
+      getShopManage({id: that.$route.query.id}).then( res => {
+        that.formData = res.data
+      })
     }
   },
   created: function(){
-    let that = this
-    getShopManage({id: that.$route.query.id})
+    this.getList()
   }
 }
 </script>

@@ -1,3 +1,4 @@
 import shopList from './shopList'
 import searchOption from './searchOption'
-export default { shopList,searchOption }
+import topSearch from './topSearch'
+export default { shopList,searchOption,topSearch }

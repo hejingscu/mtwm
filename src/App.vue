@@ -100,7 +100,7 @@ p,div,ul,li{
 .w84{width: 84%;}
 .w88{width: 88%;}
 .w92{width: 92%;margin: 0 4%;}
-.w100{width: 100%;}
+.w100{width: 100% !important}
 
 
 
@@ -159,6 +159,12 @@ p,div,ul,li{
 .icon{
   position: relative;
   display: inline-block;
+}
+.icon-test{
+  width: .2rem;
+  height: .2rem;
+  background: url('./img/touxiang.png') no-repeat;
+  background-size: contain;
 }
 
 //mint-ui修改样式

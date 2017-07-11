@@ -1,6 +1,10 @@
 <template>
   <div class="page" style="font-size: .26rem;">
-    <div class="banner">
+    <div class="topfixed-section">
+      <topSearch></topSearch>
+      <searchOption @getshop="getShop" @refresh="refreshShopFlg" v-if="blockShopFlg"></searchOption>
+    </div>
+    <div class="block-banner">
       <swiper>
         <swiper-slide v-for="item in bannerData">
           <img :src="item.img" alt="">
@@ -17,7 +21,8 @@
     </div>
     <div class="block-shop">
       <div class="block-title text-center" id="blockShopTitle" style="position: relative;z-index: 101;">附近商家</div>
-      <searchOption @getshop="getShop" ></searchOption>
+      <div id="blockShopFlg" :class="{'blockShopFlgShow' : blockShopFlg, 'blockShopFlgHide': !blockShopFlg}"></div>
+      <searchOption @getshop="getShop" @refresh="refreshShopFlg" v-if="!blockShopFlg"></searchOption>
       <shopList :data="shopData"></shopList>
     </div>
   </div>
@@ -32,11 +37,15 @@ export default {
     return {
       bannerData: [],
       shopData: [],
-      categoryData: []
+      categoryData: [],
+      blockShopFlg: false
     }
   },
   components: {swiper, swiperSlide},
   methods:{
+    refreshShopFlg(flg){
+      this.blockShopFlg = flg
+    },
     getMain(){
       getBanner().then( res => {
         this.bannerData = res.data
@@ -46,9 +55,12 @@ export default {
       })
     },
     getShop(option){
-      console.log(option)
-      getShop().then( res => {
-        this.shopData = res.data
+      let that = this
+      getShop(/*{rank: '' || option}*/).then( res => {
+        if(option){
+          that.scrollTo('blockShopFlg')
+        }
+        that.shopData = res.data
       })
     }
   },
@@ -56,12 +68,24 @@ export default {
     // Indicator.open()
   	this.getMain()
     this.getShop()
+    //this.searchItemChange()
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+  .topfixed-section{
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+  }
+  .blockShopFlgHide{
+    height: .01rem;
+  }
+  .blockShopFlgShow{
+    height: 1.34rem;
+  }
   .swiper-container{
     height: 2rem;
     img{

@@ -5,22 +5,24 @@ const fn = () => {}
 
 //店铺api
 //店铺列表
-router.get('/mtwm/shop/list', (req, res) => {
+router.get('/mtwm/shop', (req, res) => {
   var params = null;
   //分页请求
-  var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1));
-  var pageSize = parseInt(req.query.pageSize);
+  var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1)),
+      pageSize = parseInt(req.query.pageSize),
+      rank = '' || req.query.rank
+
   delete req.query.pageSize;delete req.query.pageIndex;
   req.query == {} ? (params = null) : (params = req.query)
   //根据id查询的特殊情况
   if(req.query.id){params._id = req.query.id;delete params.id;}
-  db.Shop.find(params, 'name updateTime icon', (err, doc) => {
+  db.Shop.find(params, 'name updateTime icon priceStart score discount', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
       res.send(JSON.stringify(doc))
     }
-  }).limit(pageSize).skip(indexNum)
+  }).limit(pageSize).skip(indexNum).sort({priceStart:1})
 })
 //店铺管理
 router.post('/mtwm-admin/shop/add', (req, res) => {
@@ -66,12 +68,27 @@ router.get('/mtwm-admin/shop/manage/:id', (req, res) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      res.send(JSON.stringify(doc)[0])
+      console.log(doc[0])
+      res.send(doc[0])
+    }
+  })
+})
+router.put('/mtwm-admin/shop/manage/edit', (req, res) => {
+  const postData = req.body
+  const id = req.body._id;
+  postData.updateTime = new Date().getTime()
+  delete postData._id;
+  db.Shop.update({_id: id},postData, (err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      console.log(doc)
+      res.send(JSON.stringify(doc))
     }
   })
 })
 //banner管理
-router.get('/mtwm/banner/list', (req, res) => {
+router.get('/mtwm/banner', (req, res) => {
   var params = null;
   //分页请求
   var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1));
@@ -126,7 +143,7 @@ router.delete('/mtwm-admin/banner/delete/:id', (req, res) => {
 
 
 //类目管理
-router.get('/mtwm/category/list', (req, res) => {
+router.get('/mtwm/category', (req, res) => {
   var params = null;
   //分页请求
   var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1));

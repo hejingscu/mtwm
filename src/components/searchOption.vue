@@ -1,8 +1,7 @@
 <template>
   <div :class="{'fixedTop' : fixedTop, 'notFixedTop': !fixedTop}" id="searchOptionPosition">
     <div class="block-option" id="blockOption">
-      <div class="item-option" v-if="fixedTop" :class="{'active' : curIndex === 0}" @click="switchTab(0)">综合排序</div>
-      <div class="item-option" v-if="!fixedTop" v-scroll-to="'#searchOptionPosition'" :class="{'active' : curIndex === 0}" @click="switchTab(0)">综合排序</div>
+      <div class="item-option" :class="{'active' : curIndex === 0}" @click="switchTab(0)">综合排序</div>
       <div class="item-option" :class="{'active' : curIndex === 1}" @click="switchTab(1)">销量最高</div>
       <div class="item-option" :class="{'active' : curIndex === 2}" @click="switchTab(2)">距离最近</div>
       <div class="item-option">筛选</div>
@@ -11,9 +10,9 @@
     <transition name="fade">
       <div class="block-zh-rank"  v-if="showZhRank">
         <div class="item-rank"  @click="switchTab(0, 'pfzg')">评分最高</div>
-        <div class="item-rank"  @click="switchTab(0, 'hpzd')">好评最多</div>
-        <div class="item-rank"  @click="switchTab(0, 'zlzh')">质量最好</div>
-        <div class="item-rank"  @click="switchTab(0, 'zhc')">最好吃</div>
+        <div class="item-rank"  @click="switchTab(0, 'psfzd')">配送费最低</div>
+        <div class="item-rank"  @click="switchTab(0, 'zsjzd')">起送价最低</div>
+        <div class="item-rank"  @click="switchTab(0, 'rjzd')">人均最低</div>
       </div>
     </transition>
     <transition name="fade">
@@ -48,18 +47,23 @@ Vue.use(VueScrollTo, {
       let that = this
       //延时等待页面加载完成再执行
       setTimeout( () => {
-        that.fixedTopHeight = window.document.body.offsetHeight * 0.27 //筛选条件开始置顶的位置
+        that.fixedTopHeight = window.document.body.offsetHeight * 0.26 //筛选条件开始置顶的位置
           setInterval( () => {
             if(window.scrollY < that.fixedTopHeight){
               that.fixedTop = false
             }else{
               that.fixedTop = true
             }
+            that.$emit("refresh",that.fixedTop)
           },50)
       },100)
     },
     methods: {
       switchTab(index, option){
+        let that = this
+        if(window.scrollY < that.fixedTopHeight){
+          that.scrollTo('blockShopFlg')
+        }
         switch(index){
           case 1:
             this.showZhRank = false
@@ -114,7 +118,7 @@ Vue.use(VueScrollTo, {
   //元素置顶
   .fixedTop{
     position: fixed;
-    top: 0;
+    top: .74rem;
     z-index: 10000;
     width: 100%;
   }
