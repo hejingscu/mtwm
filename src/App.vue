@@ -1,7 +1,14 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <div>
+    <transition name="router-fade" mode="out-in">
+      <keep-alive>
+          <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      </transition>
+      <transition name="router-fade" mode="out-in">
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
+    </transition>
+    </div>
 </template>
 
 <script>
@@ -107,6 +114,11 @@ p,div,ul,li{
 .page{
   margin: 0 auto;
 }
+.topfixed-section{
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+}
 
 //按钮
 .btn-group{
@@ -166,6 +178,24 @@ p,div,ul,li{
   background: url('./img/touxiang.png') no-repeat;
   background-size: contain;
 }
+.icon-return{
+  width: .46rem;
+  height: .46rem;
+  background: url('./img/returned.png') no-repeat;
+  background-size: contain;
+}
+.icon-search{
+  width: .4rem;
+  height: .4rem;
+  background: url('./img/search.png') no-repeat;
+  background-size: contain;
+}
+.icon-delete{
+  width: .36rem;
+  height: .36rem;
+  background: url('./img/delete.png') no-repeat;
+  background-size: contain;
+}
 
 //mint-ui修改样式
 .mint-toast-text{
@@ -192,5 +222,12 @@ input[type="number"]{
 
 .border-0{
   border: none !important;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
 }
 </style>

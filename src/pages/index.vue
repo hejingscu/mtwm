@@ -1,5 +1,8 @@
 <template>
   <div class="page" style="font-size: .26rem;">
+    <!-- <transition name="fade">
+      <pageSearch v-if="showPageSearch" @refreshpagesearch="refreshPageSearch"></pageSearch>
+    </transition> -->
     <div class="topfixed-section">
       <topSearch></topSearch>
       <searchOption @getshop="getShop" @refresh="refreshShopFlg" v-if="blockShopFlg"></searchOption>
@@ -38,7 +41,8 @@ export default {
       bannerData: [],
       shopData: [],
       categoryData: [],
-      blockShopFlg: false
+      blockShopFlg: false/*,
+      showPageSearch: false*/
     }
   },
   components: {swiper, swiperSlide},
@@ -46,6 +50,9 @@ export default {
     refreshShopFlg(flg){
       this.blockShopFlg = flg
     },
+    // refreshPageSearch(){
+    //   this.showPageSearch = false
+    // },
     getMain(){
       getBanner().then( res => {
         this.bannerData = res.data
@@ -75,11 +82,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  .topfixed-section{
-    position: fixed;
-    width: 100%;
-    z-index: 9999;
-  }
+  /* .pageHide{
+    height: 100vh;
+    overflow: hidden;
+  } */
   .blockShopFlgHide{
     height: .01rem;
   }
@@ -87,7 +93,7 @@ export default {
     height: 1.34rem;
   }
   .swiper-container{
-    height: 2rem;
+    height: 2.6rem;
     img{
       height: 100%;
     }

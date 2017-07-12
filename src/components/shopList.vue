@@ -35,6 +35,7 @@
     padding: 3%;
     min-height: 1.7rem;
     border-bottom: 1px solid #eee;
+    background: #fff;
     .item-inner{
       .img{
         border: 1px solid #eee;

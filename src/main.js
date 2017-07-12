@@ -6,6 +6,7 @@ import router from './router'
 import components from './components/' //加载公共组件
 import filter from './utils/filter'
 import core from './utils/core'
+//import store from './vuex/store.js'
 
 import Mint from 'mint-ui'
 import 'mint-ui/lib/style.css'
@@ -23,6 +24,7 @@ Object.keys(components).forEach((key) => {
 new Vue({
   el: '#app',
   router,
+  //store,
   template: '<App/>',
   components: { App }
 })

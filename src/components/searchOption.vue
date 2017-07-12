@@ -47,7 +47,8 @@ Vue.use(VueScrollTo, {
       let that = this
       //延时等待页面加载完成再执行
       setTimeout( () => {
-        that.fixedTopHeight = window.document.body.offsetHeight * 0.26 //筛选条件开始置顶的位置
+        if(document.getElementById("blockShopTitle")){
+          that.fixedTopHeight = document.getElementById("blockShopTitle").offsetTop //筛选条件开始置顶的位置
           setInterval( () => {
             if(window.scrollY < that.fixedTopHeight){
               that.fixedTop = false
@@ -56,6 +57,7 @@ Vue.use(VueScrollTo, {
             }
             that.$emit("refresh",that.fixedTop)
           },50)
+        }
       },100)
     },
     methods: {
@@ -152,11 +154,5 @@ Vue.use(VueScrollTo, {
   }
   .slide-leave-active {
     transform: translateY(100%);
-  }
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s
-  }
-  .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-    opacity: 0
   }
 </style>

@@ -2,7 +2,7 @@
   <div class="page" id="pageSearch" style="font-size: .26rem;" :class="{'heightAuto': searchRes.length > 0}">
     <div class="topfixed-section">
       <div class="block-top">
-        <div class="item item-return" @click="returned()"><span class="icon icon-return"></span></div>
+        <div class="item item-return" @click="refreshpagesearch()"><span class="icon icon-return"></span></div>
         <div class="item item-search">
           <span class="icon icon-search"></span>
           <div class="item-input">
@@ -11,17 +11,18 @@
         </div>
         <div class="item item-ok">搜索</div>
       </div>
-      <searchOption @getshop="getShop" v-if="searchRes.length > 0 && searchText !== ''"></searchOption>
+      <searchOption @getshop="getShop" @refresh="refreshShopFlg" v-if="blockShopFlg"></searchOption>
     </div>
-    <shopList :data="searchRes" style="padding-top: 1.34rem;"  v-if="searchRes.length > 0 && searchText !== ''"></shopList>
-    <div v-if="searchRes.length === 0 || searchText == ''" style="padding-top: .74rem;">
+    <searchOption @getshop="getShop" v-if="searchRes.length > 0"></searchOption>
+    <shopList :data="searchRes"></shopList>
+    <div v-if="searchRes.length === 0">
       <div class="block-history">
         <div class="block-header">
           历史搜索
           <span class="fr icon icon-delete"></span>
         </div>
         <div class="item-list">
-          <div class="item" @click="selectTag(item)" v-for="item in historyItemData">{{item}}</div>
+          <div class="item" v-for="item in historyItemData">{{item}}</div>
         </div>
       </div>
       <div class="block-hot">
@@ -56,9 +57,6 @@ export default {
       this.searchText = text
       this.getShop()
     },
-    returned(){
-      this.$router.go(-1)
-    },
     getShop(){
       let that = this
       getShop().then( res => {
@@ -78,17 +76,19 @@ export default {
 }
 #pageSearch{
   background: #eaeaea;
+  height: 100vh;
   width: 100%;
+  position: fixed;
   z-index: 1000001;
   .block-top{
     display: flex;
     flex-flow: row wrap;
     padding: .1rem 0;
-    height: .74rem;
+    height: .66rem;
     box-sizing: border-box;
     background: #f9f9f9;
     .item{
-      height: .54rem;
+      height: .46rem;
     }
     .item-return{
       width: 12%;
@@ -101,7 +101,7 @@ export default {
         display: inline-block;
         width: 100%;
         padding: .1rem .5rem;
-        height: .54rem;
+        height: .46rem;
         background: #edefef;
         border-radius: .2rem;
         input{
