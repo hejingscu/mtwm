@@ -43,6 +43,7 @@ Vue.use(VueScrollTo, {
         fixedTopHeight: 0
       }
     },
+    //props: ['searchOptionIndex'],
     mounted(){
       let that = this
       //延时等待页面加载完成再执行
@@ -56,7 +57,7 @@ Vue.use(VueScrollTo, {
               that.fixedTop = true
             }
             that.$emit("refresh",that.fixedTop)
-          },50)
+          },10)
         }
       },100)
     },
@@ -113,14 +114,14 @@ Vue.use(VueScrollTo, {
     .item-option{
       flex: 1;
       text-align: center;
-      height: .6rem;
-      line-height: .6rem;
+      height: .7rem;
+      line-height: .7rem;
     }
   }
   //元素置顶
   .fixedTop{
     position: fixed;
-    top: .74rem;
+    top: .84rem;
     z-index: 10000;
     width: 100%;
   }

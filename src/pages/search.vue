@@ -13,7 +13,7 @@
       </div>
       <searchOption @getshop="getShop" v-if="searchRes.length > 0 && searchText !== ''"></searchOption>
     </div>
-    <shopList :data="searchRes" style="padding-top: 1.34rem;"  v-if="searchRes.length > 0 && searchText !== ''"></shopList>
+    <shopList :data="searchRes" style="padding-top: 1.5rem;"  v-if="searchRes.length > 0 && searchText !== ''"></shopList>
     <div v-if="searchRes.length === 0 || searchText == ''" style="padding-top: .74rem;">
       <div class="block-history">
         <div class="block-header">
@@ -84,14 +84,18 @@ export default {
     display: flex;
     flex-flow: row wrap;
     padding: .1rem 0;
-    height: .74rem;
+    height: .84rem;
     box-sizing: border-box;
     background: #f9f9f9;
     .item{
-      height: .54rem;
+      height: .64rem;
     }
     .item-return{
       width: 12%;
+      .icon{
+        position: relative;
+        top: .1rem;
+      }
       text-align: center;
     }
     .item-search{
@@ -101,28 +105,30 @@ export default {
         display: inline-block;
         width: 100%;
         padding: .1rem .5rem;
-        height: .54rem;
+        height: .64rem;
         background: #edefef;
         border-radius: .2rem;
         input{
           position: relative;
-          top: -0.05rem;
+          top: .03rem;
           width: 100%;
           border: 0;
           margin: 0;
           background: #edefef;
+          font-size: .26rem;
         }
       }
       .icon{
         position: absolute;
-        top: .03rem;
-        left: .06rem;;
+        top: .13rem;
+        left: .06rem;
       }
     }
     .item-ok{
       text-align: center;
       width: 16%;
-      line-height: .46rem;
+      font-size: .28rem;
+      line-height: .64rem;
       color: #f25a2b;
     }
   }

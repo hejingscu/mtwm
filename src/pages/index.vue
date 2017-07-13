@@ -5,7 +5,7 @@
     </transition> -->
     <div class="topfixed-section">
       <topSearch></topSearch>
-      <searchOption @getshop="getShop" @refresh="refreshShopFlg" v-if="blockShopFlg"></searchOption>
+      <!-- <searchOption :searchOptionIndex="searchOptionIndex" @getshop="getShop" @refresh="refreshShopFlg" v-if="blockShopFlg"></searchOption> -->
     </div>
     <div class="block-banner">
       <swiper>
@@ -25,7 +25,7 @@
     <div class="block-shop">
       <div class="block-title text-center" id="blockShopTitle" style="position: relative;z-index: 101;">附近商家</div>
       <div id="blockShopFlg" :class="{'blockShopFlgShow' : blockShopFlg, 'blockShopFlgHide': !blockShopFlg}"></div>
-      <searchOption @getshop="getShop" @refresh="refreshShopFlg" v-if="!blockShopFlg"></searchOption>
+      <searchOption  @getshop="getShop" @refresh="refreshShopFlg"></searchOption>
       <shopList :data="shopData"></shopList>
     </div>
   </div>
@@ -90,7 +90,7 @@ export default {
     height: .01rem;
   }
   .blockShopFlgShow{
-    height: 1.34rem;
+    height: 1.54rem;
   }
   .swiper-container{
     height: 2.6rem;

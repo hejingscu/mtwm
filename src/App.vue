@@ -10,12 +10,16 @@
     </transition>
     </div>
 </template>
-
 <script>
+import router from './router'
 export default {
   name: 'app',
   created: function(){
-    
+    //每次路由变更时做一些事情
+    router.beforeEach((to, from, next) => {
+      console.log(to)
+      next()
+    })
   }
 }
 </script>
@@ -229,5 +233,11 @@ input[type="number"]{
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0
+}
+.router-fade-enter-active, .router-fade-leave-active {
+    transition: opacity .3s;
+}
+.router-fade-enter, .router-fade-leave-active {
+    opacity: 0;
 }
 </style>

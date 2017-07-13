@@ -68,16 +68,16 @@ import Velocity from 'velocity-animate'
     position: fixed;
     width: 100%;
     z-index: 200;
-    height: .6rem;
+    height: .7rem;
     display: flex;
     flex-flow: row wrap;
     .item{
       float: left;
       padding: .1rem 3%;
-      height: .74rem;
+      height: .84rem;
       line-height: .5rem;
       &>div{
-        border-radius: .2rem;
+        border-radius: .3rem;
       }
     }
     .position{
@@ -90,6 +90,8 @@ import Velocity from 'velocity-animate'
       background: #000;
       opacity: .5;
       color: #fff;
+      height: 100%;
+      line-height: .64rem;
     }
     .search{
       width: 60%;
@@ -110,6 +112,8 @@ import Velocity from 'velocity-animate'
       background: #fff;
       color: #999;
       padding-left: 6%;
+      height: 100%;
+      line-height: .64rem;
       a{
         display: inline-block;
         width: 100%;
