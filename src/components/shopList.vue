@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="item in data" class="item-shop">
+    <router-link v-for="item in data" class="item-shop" :to="{ path: '/shop/detail', query: { id: item._id }}">
       <div class="item-inner">
         <div class="img"><img :src="item.icon" alt=""></div>
         <div class="content">
@@ -12,7 +12,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script>
@@ -33,9 +33,11 @@
 <style lang="scss" scoped>
   .item-shop{
     padding: 3%;
-    min-height: 1.7rem;
+    display: block;
+    min-height: 1.5rem;
     border-bottom: 1px solid #eee;
     background: #fff;
+    color: #515151;
     .item-inner{
       .img{
         border: 1px solid #eee;

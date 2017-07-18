@@ -24,7 +24,7 @@
     </div>
     <div class="block-shop">
       <div class="block-title text-center" id="blockShopTitle" style="position: relative;z-index: 101;">附近商家</div>
-      <div id="blockShopFlg" :class="{'blockShopFlgShow' : blockShopFlg, 'blockShopFlgHide': !blockShopFlg}"></div>
+      <div id="searchOptionPosition" :class="{'blockShopFlgShow' : blockShopFlg, 'blockShopFlgHide': !blockShopFlg}"></div>
       <searchOption  @getshop="getShop" @refresh="refreshShopFlg"></searchOption>
       <shopList :data="shopData"></shopList>
     </div>
@@ -65,7 +65,7 @@ export default {
       let that = this
       getShop(/*{rank: '' || option}*/).then( res => {
         if(option){
-          that.scrollTo('blockShopFlg')
+          that.scrollTo('searchOptionPosition')
         }
         that.shopData = res.data
       })

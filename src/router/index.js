@@ -4,6 +4,8 @@ import Router from 'vue-router'
 import Index from '@/pages/index.vue'
 import Search from '@/pages/search.vue'
 
+import ShopDetail from '@/pages/shop/detail.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -12,7 +14,8 @@ export default new Router({
 	routes: [
 	    {path: '/',component: Index, meta: { keepAlive: true }},
 	    {path: '/index',component: Index, meta: { keepAlive: true }},
-	    {path: '/search',component: Search}
+	    {path: '/search',component: Search},
+	    {path: '/shop/detail',component: ShopDetail}
 	 ],
   	scrollBehavior (to, from, savedPosition) {
 	    if (savedPosition) {

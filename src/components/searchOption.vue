@@ -57,7 +57,7 @@ Vue.use(VueScrollTo, {
               that.fixedTop = true
             }
             that.$emit("refresh",that.fixedTop)
-          },10)
+          },40)
         }
       },100)
     },
@@ -65,7 +65,7 @@ Vue.use(VueScrollTo, {
       switchTab(index, option){
         let that = this
         if(window.scrollY < that.fixedTopHeight){
-          that.scrollTo('blockShopFlg')
+          that.scrollTo('searchOptionPosition')
         }
         switch(index){
           case 1:

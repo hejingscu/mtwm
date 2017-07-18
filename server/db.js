@@ -8,7 +8,8 @@ const ShopSchema = new Schema({
   icon: String,
   discount: String,
   priceStart: Number,
-  score: Number
+  score: Number,
+  goods: Array
 })
 
 const bannerSchema = new Schema({

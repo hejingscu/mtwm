@@ -78,6 +78,21 @@ function isEmpty(object) {
     return true;
 }
 
+//购物车中的商品和店铺内的商品合并时有重复的商品去掉其中一个
+Array.prototype.uniqueGoods = function() {
+    var a = this.concat();
+    for(var i=0; i< a.length ; i++){
+        for(var j=i+1; j<a.length; j++){
+            if(a[i].id == a[j].id){
+                a[i] = a[j]
+                a.splice(j, 1);
+            }
+        }
+    }
+    return a;
+};
+ 
+
 //拼接url
 Vue.prototype.concatUrl = function(params){
     let option = params,urlParam = ""

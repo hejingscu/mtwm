@@ -11,3 +11,6 @@ export const getShop = params => axios.get(baseUrl + 'shop', {params: params});
 export const getBanner = params => axios.get(baseUrl + 'banner', params);
 
 export const getCategory = params => axios.get(baseUrl + 'category', params);
+
+//获取店铺信息
+export const getShopManage = params => axios.get(baseUrl + 'shop/manage/' + params.id);

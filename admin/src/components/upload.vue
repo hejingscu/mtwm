@@ -1,15 +1,33 @@
 <template>
     <div>
-       <div id="container" style="position: relative;float: left;">
-          <a class="btn btn-default btn-lg" id="pickfiles" href="javascript:;" style="position: relative; z-index: 1;">
-              <i class="glyphicon glyphicon-plus" style="position: relative;top: 3px;"></i>
-              <span style="font-size: 14px;">选择图片</span>
-          </a>
-      <div id="html5_1bk65h2si15cevak1ups1h5f1q5t3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1bk65h2si15cevak1ups1h5f1q5t3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div></div>
-      <div style="border: 1px solid #eee;display: inline-block;float: right;">
-        <!-- <img v-if="src !== ''" :src="src" alt="" width="150" height="150"> -->
-        <img :src="img" alt="" :width="width" :height="height">
-      </div>
+        <div v-if="mode == 'single'">
+          <div id="container" style="position: relative;float: left;">
+            <a class="btn btn-default btn-lg" id="pickfiles" href="javascript:;" style="position: relative; z-index: 1;">
+                <i class="glyphicon glyphicon-plus" style="position: relative;top: 3px;"></i>
+                <span style="font-size: 14px;">上传图片</span>
+            </a>
+            <div id="html5_1bk65h2si15cevak1ups1h5f1q5t3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1bk65h2si15cevak1ups1h5f1q5t3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div>
+          </div>
+          <div style="border: 1px solid #eee;display: inline-block;float: right;">
+            <!-- <img v-if="src !== ''" :src="src" alt="" width="150" height="150"> -->
+            <img :src="img" alt="" :width="width" :height="height">
+          </div>
+        </div>
+        <div v-if="mode == 'multi'">
+          <div id="container" style="position: relative;">
+            <a class="btn btn-default btn-lg" id="pickfiles" href="javascript:;" style="position: relative; z-index: 1;">
+                <i class="glyphicon glyphicon-plus" style="position: relative;top: 3px;"></i>
+                <span style="font-size: 14px;">添加图片</span>
+            </a>
+            <div id="html5_1bk65h2si15cevak1ups1h5f1q5t3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1bk65h2si15cevak1ups1h5f1q5t3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div>
+          </div>
+          <div v-if="mode == 'multi'" style="margin-top: 30px;">
+            <div v-for="item in src" style="float: left; margin: 0 30px 30px 0;border: 1px solid #ccc;">
+              <img :src="item" alt="" :width="width" :height="height">
+            </div>
+          </div>
+        </div>
+        
     </div>
 </template>
 
@@ -23,13 +41,17 @@ require('qiniu-js/dist/qiniu.js')
 import { getQiniuToken } from '../service/getData'
   export default {
     props: {
+      mode: {
+        type: String,
+        default: 'single'
+      },
       keyname: {
         type: String,
         default: ''
       },
       img: {
         type: String,
-        default: ''
+        default: 'x'
       },
       width: {
         type: Number,
@@ -43,23 +65,32 @@ import { getQiniuToken } from '../service/getData'
     data() {
       return {
         token: '',
-        src: ''//临时存储
+        src: []//临时存储,
       };
     },
     methods: {
       //寻找父级组件上的变量值并改变
       getRootNode(obj){
+
         // let keyArray = ['modalData','icon'],
         //     ob = {modalData:{icon: '99'}}
         // console.log(ob[keyArray[0]][keyArray[1]])
         let that = this,keyArray = that.keyname.split('.'), realKey
+
         if(obj[keyArray[0]]){
           if(keyArray.length > 1){
-            realKey = obj[keyArray[0]][keyArray[1]]
+            if(that.mode == 'single'){
+              obj[keyArray[0]][keyArray[1]] = that.src[0]
+            }else{
+              obj[keyArray[0]][keyArray[1]] = that.src
+            }
           }else{
-            realKey = obj[keyArray[0]]
+            if(that.mode == 'single'){
+              obj[keyArray[0]] = that.src[0]
+            }else{
+              obj[keyArray[0]] = that.src
+            }
           }
-          obj[keyArray[0]][keyArray[1]] = that.src
         }else{
           that.getRootNode(obj.$parent)
         }
@@ -92,7 +123,7 @@ import { getQiniuToken } from '../service/getData'
               'FileUploaded': function(up, file, info) {
                      let domain = up.getOption('domain');
                      let res = JSON.parse(info);
-                     that.src = domain +"/"+ res.key //获取上传成功后的文件的Url
+                     that.src.push(domain +"/"+ res.key) //获取上传成功后的文件的Url
                      that.getRootNode(that.$parent)
                      //that.$parent.$parent.modalData.imageUrl = domain +"/"+ res.key
               },

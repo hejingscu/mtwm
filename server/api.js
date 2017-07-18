@@ -16,6 +16,7 @@ router.get('/mtwm/shop', (req, res) => {
   req.query == {} ? (params = null) : (params = req.query)
   //根据id查询的特殊情况
   if(req.query.id){params._id = req.query.id;delete params.id;}
+  console.log(params)
   db.Shop.find(params, 'name updateTime icon priceStart score discount', (err, doc) => {
     if (err) {
       console.log(err)
@@ -61,10 +62,10 @@ router.delete('/mtwm-admin/shop/delete/:id', (req, res) => {
   })
 })
 //配置商家信息
-router.get('/mtwm-admin/shop/manage/:id', (req, res) => {
+router.get('/mtwm/shop/manage/:id', (req, res) => {
   const id = req.param('id');
   console.log(id)
-  db.Shop.find({_id: id}, 'priceStart score discount', (err, doc) => {
+  db.Shop.find({_id: id}, 'priceStart score discount goods', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
@@ -87,6 +88,21 @@ router.put('/mtwm-admin/shop/manage/edit', (req, res) => {
     }
   })
 })
+//添加商品
+router.post('/mtwm-admin/shop/manage/goods/add/:shopid', (req, res) => {
+  const postData = req.body
+  const shopid = req.param('shopid');
+  postData.updateTime = new Date().getTime()
+  db.Shop.find({_id: shopid}, 'goods' ,(err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      console.log(doc)
+      doc[0].goods.push(postData)
+    }
+  })
+})
+
 //banner管理
 router.get('/mtwm/banner', (req, res) => {
   var params = null;
