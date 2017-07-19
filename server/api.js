@@ -3,6 +3,58 @@ const router = express.Router()
 const db = require('./db')
 const fn = () => {}
 
+var checkUserIsExsit = function(postData){
+  return db.User.findOne({ phone: postData.phone })
+}
+
+//用户模块api
+router.post('/mtwm/user/register/exsit', (req, res) => {
+  const postData = req.body
+  //查询用户是否存在
+  checkUserIsExsit(postData).then( isExsit => {
+    if(!isExsit){
+      res.json({exsit: false, description: "手机号可使用"})
+    }else{
+      res.json({exsit: true, description: "用户已存在"})
+    }
+  })
+})
+router.post('/mtwm/user/register', (req, res) => {
+  const postData = req.body
+  postData.registerTime = new Date().getTime()
+  //查询用户是否存在
+  checkUserIsExsit(postData).then( isExsit => {
+    if(!isExsit){
+      db.User.create(postData, (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          res.send(JSON.stringify(doc))
+        }
+      })
+    }else{
+      res.json({exsit: true, description: "用户已存在"})
+    }
+  })
+})
+router.post('/mtwm/user/login', (req, res) => {
+  const postData = req.body
+  postData.registerTime = new Date().getTime()
+  //查询用户是否存在
+  checkUserIsExsit(postData).then( isExsit => {
+    if(!isExsit){
+      res.json({code: 2, description: "用户不存在"})
+    }else{
+      if(postData.password !== isExsit.password){
+        res.json({code: 1, description: "密码错误"})
+        return false
+      }
+      req.session.phone = isExsit.phone;
+      res.json({code: 0, description: "登录成功"})
+    }
+  })
+})
+
 //店铺api
 //店铺列表
 router.get('/mtwm/shop', (req, res) => {

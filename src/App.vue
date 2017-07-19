@@ -17,7 +17,6 @@ export default {
   created: function(){
     //每次路由变更时做一些事情
     router.beforeEach((to, from, next) => {
-      console.log(to)
       next()
     })
   }

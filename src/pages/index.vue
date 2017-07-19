@@ -28,6 +28,7 @@
       <searchOption  @getshop="getShop" @refresh="refreshShopFlg"></searchOption>
       <shopList :data="shopData"></shopList>
     </div>
+    <mfooter></mfooter>
   </div>
 </template>
 
