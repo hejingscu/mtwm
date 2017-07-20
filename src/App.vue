@@ -1,13 +1,10 @@
 <template>
   <div>
-    <transition name="router-fade" mode="out-in">
+
       <keep-alive>
           <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
-      </transition>
-      <transition name="router-fade" mode="out-in">
       <router-view v-if="!$route.meta.keepAlive"></router-view>
-    </transition>
     </div>
 </template>
 <script>
@@ -229,13 +226,13 @@ input[type="number"]{
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
+  transition: opacity .03s
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0
 }
 .router-fade-enter-active, .router-fade-leave-active {
-    transition: opacity .3s;
+    transition: opacity .03s;
 }
 .router-fade-enter, .router-fade-leave-active {
     opacity: 0;

@@ -1,6 +1,6 @@
 <template>
   <div class="page" style="font-size: .26rem;">
-    
+    我的
   </div>
 </template>
 

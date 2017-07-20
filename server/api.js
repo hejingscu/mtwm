@@ -49,7 +49,11 @@ router.post('/mtwm/user/login', (req, res) => {
         res.json({code: 1, description: "密码错误"})
         return false
       }
-      req.session.phone = isExsit.phone;
+      var today = new Date();
+      var time = today.getTime() + 60*1000;
+      var time2 = new Date(time);
+      var timeObj = time2.toGMTString();
+      res.cookie('haha', 'name1=value1&name2=value2', {maxAge:10*1000, path:'/', httpOnly:true});
       res.json({code: 0, description: "登录成功"})
     }
   })

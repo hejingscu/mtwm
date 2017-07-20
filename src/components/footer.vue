@@ -12,7 +12,8 @@
         text: [
           {name: '首页', url: 'index'},
           {name: '订单', url: 'order'},
-          {name: '我的', url: 'mine'}
+          {name: '我的', url: 'mine'},
+          {name: '登录', url: 'login'}
         ]
       }
     },

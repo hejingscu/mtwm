@@ -126,6 +126,6 @@ export default {
   }
   .block-shop{
     background: #fff;
-    margin-bottom: .2rem;
+    margin-bottom: .8rem;
   }
 </style>
