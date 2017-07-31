@@ -50,16 +50,19 @@ Vue.use(VueScrollTo, {
       setTimeout( () => {
         if(document.getElementById("blockShopTitle")){
           that.fixedTopHeight = document.getElementById("blockShopTitle").offsetTop //筛选条件开始置顶的位置
-          setInterval( () => {
+          that.timer = setInterval( () => {
             if(window.scrollY < that.fixedTopHeight){
               that.fixedTop = false
             }else{
               that.fixedTop = true
             }
             that.$emit("refresh",that.fixedTop)
-          },40)
+          },20)
         }
       },100)
+    },
+    deactivated(){
+      clearInterval(this.timer)
     },
     methods: {
       switchTab(index, option){

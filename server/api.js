@@ -1,7 +1,11 @@
 const express = require('express')
+const cookie = require('cookie-parser');
 const router = express.Router()
 const db = require('./db')
 const fn = () => {}
+const app = express()
+
+app.use(cookie())
 
 var checkUserIsExsit = function(postData){
   return db.User.findOne({ phone: postData.phone })
@@ -49,11 +53,8 @@ router.post('/mtwm/user/login', (req, res) => {
         res.json({code: 1, description: "密码错误"})
         return false
       }
-      var today = new Date();
-      var time = today.getTime() + 60*1000;
-      var time2 = new Date(time);
-      var timeObj = time2.toGMTString();
-      res.cookie('haha', 'name1=value1&name2=value2', {maxAge:10*1000, path:'/', httpOnly:true});
+      res.cookie('isVisit', 1, {maxAge: 60 * 1000});
+      //res.cookie('mttoken', '123456', { expires: new Date(Date.now() + 900000), httpOnly: true });
       res.json({code: 0, description: "登录成功"})
     }
   })
@@ -62,6 +63,7 @@ router.post('/mtwm/user/login', (req, res) => {
 //店铺api
 //店铺列表
 router.get('/mtwm/shop', (req, res) => {
+  console.log(req.cookies)
   var params = null;
   //分页请求
   var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1)),

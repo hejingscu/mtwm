@@ -39,7 +39,7 @@ import Velocity from 'velocity-animate'
       //延时等待页面加载完成再执行
       setTimeout( () => {
         that.searchItemChangeHeight = document.getElementById("category").offsetTop * 0.8 //筛选条件开始置顶的位置
-          setInterval( () => {
+          that.timer = setInterval( () => {
             if(window.scrollY < that.searchItemChangeHeight){
               that.searchItemChangeFlg = false
             }else{
@@ -47,6 +47,9 @@ import Velocity from 'velocity-animate'
             }
           },50)
       },100)
+    },
+    deactivated(){
+      clearInterval(this.timer)
     },
     methods: {
       refreshPageSearch(){
