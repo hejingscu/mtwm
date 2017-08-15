@@ -1,6 +1,6 @@
 <template>
   <div class="footer-container">
-    <router-link :to="{ path: item.url}" class="item" @click="switchTab(index)" v-for="(item, index) in text" :class="{'active': tabIndex === index}">
+    <router-link :key="index" :to="{ path: item.url}" class="item" @click="switchTab(index)" v-for="(item, index) in text" :class="{'active': tabIndex === index}">
       {{item.name}}
     </router-link>
   </div>

@@ -44,7 +44,7 @@ Vue.use(VueScrollTo, {
       }
     },
     //props: ['searchOptionIndex'],
-    mounted(){
+    activated(){
       let that = this
       //延时等待页面加载完成再执行
       setTimeout( () => {

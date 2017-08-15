@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link v-for="item in data" class="item-shop" :to="{ path: 'shop/detail', query: { id: item._id }}">
+    <router-link :key="index" v-for="(item, index) in data" class="item-shop" :to="{ path: 'shop/detail', query: { id: item._id }}">
       <div class="item-inner">
         <div class="img"><img :src="item.icon" alt=""></div>
         <div class="content">

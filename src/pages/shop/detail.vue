@@ -44,7 +44,7 @@
         <div class="total-price">
           ￥{{totalPrice | number(2)}}
         </div>
-        <div class="to-pay" :class="{'to-pay-empty': cartData.list.length <= 0, 'to-pay-notEmpty': cartData.list.length > 0}">
+        <div class="to-pay" @click="toPay" :class="{'to-pay-empty': cartData.list.length <= 0, 'to-pay-notEmpty': cartData.list.length > 0}">
           去结算
         </div>
       </div>
@@ -74,6 +74,9 @@ export default {
         that.getBuyCartData()
       })
       //that.$store.dispatch("getFoodsList", {id: that.$route.query.id})
+    },
+    toPay(){
+      this.$router.push('/mine')
     },
     //加减商品
     addGoods(item,index){

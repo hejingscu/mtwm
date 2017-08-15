@@ -9,7 +9,7 @@
     </div>
     <div class="block-banner">
       <swiper>
-        <swiper-slide v-for="item in bannerData">
+        <swiper-slide :key="index" v-for="(item, index) in bannerData">
           <img :src="item.img" alt="">
         </swiper-slide>
       </swiper>
@@ -66,6 +66,7 @@ export default {
       let that = this
       getShop(/*{rank: '' || option}*/).then( res => {
         if(option){
+          console.log(1)
           that.scrollTo('searchOptionPosition')
         }
         that.shopData = res.data

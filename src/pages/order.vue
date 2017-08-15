@@ -1,6 +1,7 @@
 <template>
   <div class="page" style="font-size: .26rem;">
     订单页
+    {{test}}
   </div>
 </template>
 
@@ -10,7 +11,7 @@ import { Indicator  } from 'mint-ui';
 export default {
   data () {
     return {
-      
+      test: true
     }
   },
   methods:{
