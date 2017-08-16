@@ -21,4 +21,4 @@ src/  用户端
 
 ### 另外
 本项目用户端 用react也同样进行了实现，功能和此版本完全一样，仅用作react学习
-https://github.com/hejingscu/react-demo/tree/master/myApp
+https://github.com/hejingscu/mtwm-react
