@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const init = require('./init.json')
 const Schema = mongoose.Schema
+mongoose.Promise = global.Promise;
 
 const userSchema = new Schema({
     phone: String,
@@ -30,11 +31,25 @@ const categorySchema = new Schema({
     name: String
 })
 
+const shopcartSchema = new Schema({
+    phone: String,
+    list: Array,
+    totalAmount: Number
+})
+
+const orderSchema = new Schema({
+    phone: String,
+    list: Array,
+    totalAmount: Number
+})
+
 const Models = {
     User: mongoose.model('User', userSchema),
     Shop: mongoose.model('Shop', ShopSchema),
     Banner: mongoose.model('Banner', bannerSchema),
     Category: mongoose.model('Category', categorySchema),
+    Shopcart: mongoose.model('Shopcart', shopcartSchema),
+    Order: mongoose.model('Order', orderSchema),
     initialized: false
 }
 

@@ -1,44 +1,48 @@
 <template>
     <div>
         <div v-if="mode == 'single'">
+          <!-- img:{{img}}-src:{{src}} -->
+          <div style="border: 1px solid #eee;display: inline-block;float: right;margin-bottom: 10px;" v-if="src.length > 0 || img">
+            <!-- <img v-if="src !== ''" :src="src" alt="" width="150" height="150"> -->
+            <img :src="src[0]" v-if="src.length > 0" alt="" :width="width" :height="height">
+            <img :src="img" v-else alt="" :width="width" :height="height">
+          </div>
           <div id="container" style="position: relative;float: left;">
-            <a class="btn btn-default btn-lg" id="pickfiles" href="javascript:;" style="position: relative; z-index: 1;">
+            <a class="btn btn-default" :id="btnid" href="javascript:;" style="position: relative; z-index: 1;">
                 <i class="glyphicon glyphicon-plus" style="position: relative;top: 3px;"></i>
                 <span style="font-size: 14px;">上传图片</span>
             </a>
             <div id="html5_1bk65h2si15cevak1ups1h5f1q5t3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1bk65h2si15cevak1ups1h5f1q5t3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div>
           </div>
-          <div style="border: 1px solid #eee;display: inline-block;float: right;">
-            <!-- <img v-if="src !== ''" :src="src" alt="" width="150" height="150"> -->
-            <img :src="img" alt="" :width="width" :height="height">
-          </div>
         </div>
         <div v-if="mode == 'multi'">
+          <div v-if="mode == 'multi'" style="overflow: hidden">
+            <div v-for="item in src" style="float: left; margin: 0 30px 30px 0;border: 1px solid #ccc;">
+              <img :src="item" alt="" :width="width" :height="height">
+            </div>
+          </div>
           <div id="container" style="position: relative;">
-            <a class="btn btn-default btn-lg" id="pickfiles" href="javascript:;" style="position: relative; z-index: 1;">
+            <a class="btn btn-default" :id="btnid" href="javascript:;" style="position: relative; z-index: 1;">
                 <i class="glyphicon glyphicon-plus" style="position: relative;top: 3px;"></i>
                 <span style="font-size: 14px;">添加图片</span>
             </a>
             <div id="html5_1bk65h2si15cevak1ups1h5f1q5t3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1bk65h2si15cevak1ups1h5f1q5t3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div>
           </div>
-          <div v-if="mode == 'multi'" style="margin-top: 30px;">
-            <div v-for="item in src" style="float: left; margin: 0 30px 30px 0;border: 1px solid #ccc;">
-              <img :src="item" alt="" :width="width" :height="height">
-            </div>
-          </div>
         </div>
-        
+
     </div>
 </template>
 
 <style>
-
+  .btn-default{
+    padding: 10px;
+  }
 </style>
 
 <script>
 require('plupload/js/plupload.dev.js')
 require('qiniu-js/dist/qiniu.js')
-import { getQiniuToken } from '../service/getData'
+import { getQiniuToken } from '@/api/api'
   export default {
     props: {
       mode: {
@@ -50,16 +54,20 @@ import { getQiniuToken } from '../service/getData'
         default: ''
       },
       img: {
-        type: String,
-        default: 'x'
+        type: [String, Array],
+        default: ''
       },
       width: {
-        type: Number,
+        type: [Number, String],
         default: 150
       },
       height: {
         type: Number,
         default: 150
+      },
+      btnid: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -69,6 +77,9 @@ import { getQiniuToken } from '../service/getData'
       };
     },
     methods: {
+      clearimg(){
+        this.src = []
+      },
       //寻找父级组件上的变量值并改变
       getRootNode(obj){
 
@@ -99,7 +110,7 @@ import { getQiniuToken } from '../service/getData'
         let that = this
         let uploader = Qiniu.uploader({
           runtimes: 'html5,flash,html4',      // 上传模式，依次退化
-          browse_button: 'pickfiles',         // 上传选择的点选按钮，必需
+          browse_button: that.btnid,         // 上传选择的点选按钮，必需
           uptoken : that.token, // uptoken是上传凭证，由其他程序生成
           domain: 'http://7xjivo.com2.z0.glb.qiniucdn.com/',     // bucket域名，下载资源时用到，必需
           max_file_size: '100mb',             // 最大文件体积限制
@@ -122,7 +133,7 @@ import { getQiniuToken } from '../service/getData'
               },
               'FileUploaded': function(up, file, info) {
                      let domain = up.getOption('domain');
-                     let res = JSON.parse(info);
+                     let res = JSON.parse(info.response);
                      that.src.push(domain +"/"+ res.key) //获取上传成功后的文件的Url
                      that.getRootNode(that.$parent)
                      //that.$parent.$parent.modalData.imageUrl = domain +"/"+ res.key
@@ -163,10 +174,15 @@ import { getQiniuToken } from '../service/getData'
       }
     },
     created: function(){
-      getQiniuToken().then( res => {
-        this.token = res.data.uptoken
-        this.init()
-      })
+      if(!this.token){
+        getQiniuToken().then( res => {
+          this.token = res.data.uptoken
+          this.init()
+        })
+      }
+    },
+    watch:{
+
     }
   }
 </script>

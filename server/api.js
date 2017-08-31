@@ -1,9 +1,14 @@
 const express = require('express')
 const cookie = require('cookie-parser');
 const router = express.Router()
+var expressJwt = require("express-jwt");
 const db = require('./db')
+var jwt = require('jsonwebtoken');
 const fn = () => {}
 const app = express()
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise;  
+app.use(expressJwt({secret: "secret"}).unless({path: ["/login"]}));
 
 app.use(cookie())
 
@@ -43,27 +48,79 @@ router.post('/mtwm/user/register', (req, res) => {
 })
 router.post('/mtwm/user/login', (req, res) => {
   const postData = req.body
+  res.cookie('hjtoken', '', {expires: new Date(0)});//清除cookie
   postData.registerTime = new Date().getTime()
   //查询用户是否存在
   checkUserIsExsit(postData).then( isExsit => {
     if(!isExsit){
-      res.json({code: 2, description: "用户不存在"})
+      res.json(400, {code: 2, description: "用户不存在"})
     }else{
       if(postData.password !== isExsit.password){
-        res.json({code: 1, description: "密码错误"})
+        res.json(400, {code: 1, description: "密码错误"})
         return false
       }
-      res.cookie('isVisit', 1, {maxAge: 60 * 1000});
+      var token = jwt.sign(postData, 'shh');
+      res.cookie('hjtoken', token, {maxAge: 60 * 60 * 1000});
       //res.cookie('mttoken', '123456', { expires: new Date(Date.now() + 900000), httpOnly: true });
       res.json({code: 0, description: "登录成功"})
     }
   })
 })
+router.get('/mtwm/user/profile', (req, res) => {
+  if(req.cookies.hjtoken){
+    jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
+      db.User.findOne({ phone: decoded.phone} , 'phone registerTime ', (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          res.send(JSON.stringify(doc))
+        }
+      })
+    });
+  }else{
+    res.send(401, {code: 0, description: '您的登录状态已失效，请重新登录'})
+  }
+})
+
+//订单相关
+//下单
+router.post('/mtwm/order', (req, res) => {
+  const postData = req.body
+  if(req.cookies.hjtoken){
+    jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
+      postData.phone = decoded.phone
+      db.Order.create(postData, (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          res.send(JSON.stringify(doc))
+        }
+      })
+    });
+  }else{
+    res.send(401, {code: 0, description: '您的登录状态已失效，请重新登录'})
+  }
+})
+//查询用户的订单
+router.get('/mtwm/order', (req, res) => {
+  if(req.cookies.hjtoken){
+    jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
+      db.Order.find({ phone: decoded.phone} , 'list totalAmount ', (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          res.send(JSON.stringify(doc))
+        }
+      })
+    });
+  }else{
+    res.send(401, {code: 0, description: '您的登录状态已失效，请重新登录'})
+  }
+})
 
 //店铺api
 //店铺列表
 router.get('/mtwm/shop', (req, res) => {
-  console.log(req.cookies)
   var params = null;
   //分页请求
   var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1)),
@@ -74,7 +131,6 @@ router.get('/mtwm/shop', (req, res) => {
   req.query == {} ? (params = null) : (params = req.query)
   //根据id查询的特殊情况
   if(req.query.id){params._id = req.query.id;delete params.id;}
-  console.log(params)
   db.Shop.find(params, 'name updateTime icon priceStart score discount', (err, doc) => {
     if (err) {
       console.log(err)
@@ -104,7 +160,6 @@ router.put('/mtwm-admin/shop/edit', (req, res) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc)
       res.send(JSON.stringify(doc))
     }
   })
@@ -122,12 +177,10 @@ router.delete('/mtwm-admin/shop/delete/:id', (req, res) => {
 //配置商家信息
 router.get('/mtwm/shop/manage/:id', (req, res) => {
   const id = req.param('id');
-  console.log(id)
   db.Shop.find({_id: id}, 'priceStart score discount goods', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc[0])
       res.send(doc[0])
     }
   })
@@ -141,7 +194,6 @@ router.put('/mtwm-admin/shop/manage/edit', (req, res) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc)
       res.send(JSON.stringify(doc))
     }
   })
@@ -155,7 +207,6 @@ router.post('/mtwm-admin/shop/manage/goods/add/:shopid', (req, res) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc)
       doc[0].goods.push(postData)
     }
   })
@@ -199,7 +250,6 @@ router.put('/mtwm-admin/banner/edit', (req, res) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc)
       res.send(JSON.stringify(doc))
     }
   })
@@ -254,7 +304,6 @@ router.put('/mtwm-admin/category/edit', (req, res) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc)
       res.send(JSON.stringify(doc))
     }
   })
