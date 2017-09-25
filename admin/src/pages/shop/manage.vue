@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="form-group col-md-12 text-center">
-      <div class="col-md-6">
+      <div class="col-md-5 modify-form">
+        <h4>店铺基本信息</h4>
+        <div class="input-group">
+          <label for="" style="margin-right: 20px;">店铺名称</label>{{mainData.name}}
+        </div>
         <div class="input-group">
           <label for="" class="input-group-addon">起送价</label>
           <input type="text" class="form-control" v-model="formData.priceStart">
@@ -15,6 +19,23 @@
           <input type="text" class="form-control" v-model="formData.discount">
         </div>
         <a href="javascript:;" class="btn btn-primary" @click="submit()">提交</a>
+      </div>
+      <div class="col-md-5 modify-form">
+        <h4>{{opType == 'add' ? '添加' : '修改'}}商品</h4>
+        <div class="input-group">
+          <label for="" class="input-group-addon">商品名称</label>
+          <input type="text" class="form-control" v-model="goodsFormData.name">
+        </div>
+        <div class="input-group">
+          <label for="" class="input-group-addon">商品图片</label>
+          <upload :keyname="'goodsFormData.icon'" :img="goodsFormData.icon" btnid="goodsImg" ref="upload"></upload>
+        </div>
+        <div class="input-group">
+          <label for="" class="input-group-addon">价格</label>
+          <input type="text" class="form-control" v-model="goodsFormData.price">
+        </div>
+        {{goodsFormData}}
+        <a href="javascript:;" class="btn btn-primary" :disabled="!checkFormEmpty(goodsFormData)" @click="submitGoods()">{{opType == 'add' ? '添加' : '修改'}}</a>
       </div>
     </div>
     <div class="col-md-12">
@@ -38,22 +59,17 @@
             <tbody>
                 <tr v-for="(item, index) in goodsData">
                   <td>
-                    <span v-if="!item.isEdit">{{item.name}}</span>
-                    <input v-else type="text" v-model="cacheGoodsData.name">
+                    <span>{{item.name}}</span>
                   </td>
                   <td>
-                    <img v-if="!item.isEdit" :src="item.icon" alt="" height="80">
-                    <upload v-else :keyname="'cacheGoodsData.icon'" :img="cacheGoodsData.icon"></upload>
+                    <img :src="item.icon" alt="" height="80">
                   </td>
                   <td>
-                    <span v-if="!item.isEdit" >{{item.price}}</span>
-                    <input v-else type="text" v-model="cacheGoodsData.price">
+                    <span>{{item.price}}</span>
                   </td>
                   <td>
-                    <a href="javascript:;" v-if="!item.isEdit">修改</a>
-                    <a href="javascript:;" v-if="!item.isEdit">删除</a>
-                    <a href="javascript:;" @click="submitGoods()" v-if="item.isEdit">确定</a>
-                    <a href="javascript:;" @click="cancel()" v-if="item.isEdit">取消</a>
+                    <a href="javascript:;" @click="editGoods(item)">修改</a>
+                    <a href="javascript:;">删除</a>
                   </td>
                 </tr>
             </tbody>
@@ -68,20 +84,32 @@
   .input-group{
     margin-bottom: 10px;
   }
+  h4{
+    margin-bottom: 20px;
+  }
+  .modify-form{
+    border: 1px solid #ddd;
+    margin: 10px;
+    padding: 10px;
+  }
 </style>
 <script>
 import { getShopManage, editShopManage, addGoods } from '../../service/getData'
+import * as api from '@/service/getData'
 export default{
   data() {
     return {
+      mainData: {},
       formData:{},
-      //imgData: []
+      opType: 'add',
       goodsData: [],
       cacheGoodsData: {},
-      itemGoods: {icon: '', name: '', price: '', isEdit: true}
+      itemGoods: {icon: '', name: '', price: '', isEdit: true},
+      goodsFormData: {name: '', icon: '', price: ''}
     }
   },
   methods: {
+    //店铺基本信息
     async submit(){
       let res = await editShopManage(this.formData);
       this.$Notice.success({title: '修改成功'});
@@ -90,22 +118,40 @@ export default{
     getList(){
       let that = this
       getShopManage({id: that.$route.query.id}).then( res => {
-        that.formData = that.littleCopy(res.data, ['priceStart', 'score', 'discount'])
+        that.mainData = res.data
+        that.formData = that.littleCopy(res.data, ['priceStart', 'score', 'discount', "_id"])
         that.goodsData = res.data.goods
       })
     },
     addGoods(){
-      let that = this
-      if(that.cacheGoodsData.shopid){
-        this.$Notice.success({title: '请先完成当前商品的编辑'});
-      }
-      else{
-        that.goodsData.push(that.itemGoods)
-        that.cacheGoodsData = {icon: "", name: '', price: '', shopid: that.$route.query.id}
-      }
+      this.opType = 'add'
+      this.goodsFormData = {name: '', icon: '', price: ''}
     },
-    submitGoods(){
-      addGoods(this.cacheGoodsData)
+    editGoods(item){
+      this.opType = 'edit'
+      this.goodsFormData = this.littleCopy(item, ['name', 'icon', 'price', 'goodsId'])
+    },
+    // addGoods(){
+    //   let that = this
+    //   if(that.cacheGoodsData.shopid){
+    //     this.$Notice.success({title: '请先完成当前商品的编辑'});
+    //   }
+    //   else{
+    //     that.goodsData.push(that.itemGoods)
+    //     that.cacheGoodsData = {icon: "", name: '', price: '', shopid: that.$route.query.id}
+    //   }
+    // },
+    async submitGoods(){
+      this.goodsFormData._id = this.$route.query.id
+      if(this.opType == 'add'){
+        let res = await api.addGoods(this.goodsFormData);
+      }else{
+        let res = await api.editGoods(this.goodsFormData);
+      }
+      this.$Notice.success({title: '修改成功'});
+      this.goodsFormData = {name: '', icon: '', price: ''}
+      this.getList()
+      this.$refs['upload'].clearimg()
     },
     cancel(){
       

@@ -11,7 +11,7 @@ export const getQiniuToken = params => axios.get('/house/qiniu/test');
 
 //店铺管理
 
-export const getShop = params => axios.get(baseUrl + 'shop', params);
+export const getShop = params => axios.get(baseUrl + 'shop', {params: params});
 
 export const addShop = params => axios.post(adminUrl + 'shop/add', params);
 
@@ -23,9 +23,12 @@ export const deleteShop = params => axios.delete(adminUrl + 'shop/delete/' + par
 
 export const getShopManage = params => axios.get(baseUrl + 'shop/manage/' + params.id);
 
-export const editShopManage = params => axios.put(adminUrl + 'shop/manage/edit', params);
+export const editShopManage = params => axios.put(adminUrl + 'shop/manage/edit/' + params._id , params);
 
-export const addGoods = params => axios.post(adminUrl + 'shop/manage/goods/add/' + params.shopid , params);
+export const addGoods = params => axios.post(adminUrl + 'shop/manage/goods/add/' + params._id , params);
+
+export const editGoods = params => axios.put(adminUrl + 'shop/manage/goods/edit/' + params._id , params);
+
 
 //banner管理
 

@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/house':{
-            target: 'http://172.30.248.170/',
+            target: 'https://open.trc.com/',
             changeOrigin: true,
             pathRewrite: {
                 '^/house':'/house'

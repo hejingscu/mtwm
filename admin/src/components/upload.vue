@@ -42,7 +42,7 @@
 <script>
 require('plupload/js/plupload.dev.js')
 require('qiniu-js/dist/qiniu.js')
-import { getQiniuToken } from '@/api/api'
+import { getQiniuToken } from '@/service/getData'
   export default {
     props: {
       mode: {
@@ -133,7 +133,7 @@ import { getQiniuToken } from '@/api/api'
               },
               'FileUploaded': function(up, file, info) {
                      let domain = up.getOption('domain');
-                     let res = JSON.parse(info.response);
+                     let res = JSON.parse(info);
                      that.src.push(domain +"/"+ res.key) //获取上传成功后的文件的Url
                      that.getRootNode(that.$parent)
                      //that.$parent.$parent.modalData.imageUrl = domain +"/"+ res.key

@@ -95,10 +95,20 @@ Vue.prototype.getUrlPrams = function(){
 }
 
 //验证表单必填项有无空值
-Vue.prototype.checkFormEmpty = function(obj, require){
+Vue.prototype.checkFormEmpty = function(obj, required){
     let result = false
     for(var i in obj){
-        if(require.indexOf(i) !== -1){
+        if(required){
+            if(required.indexOf(i) !== -1){
+                if(obj[i] && obj[i] !== ''){ 
+                    result = true 
+                }
+                else{ 
+                    result = false; 
+                    return false;
+                }
+            }
+        }else{
             if(obj[i] && obj[i] !== ''){ 
                 result = true 
             }

@@ -8,16 +8,16 @@ import store from './vuex/store.js'
 import filter from './utils/filter'
 import core from './utils/core'
 import iView from 'iview'
-import Element from 'element-ui'
+// import Element from 'element-ui'
 
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'iview/dist/styles/iview.css'
-import 'element-ui/lib/theme-default/index.css';
+// import 'element-ui/lib/theme-default/index.css';
 
 Vue.use(iView);
-Vue.use(Element)
+// Vue.use(Element)
 
 Object.keys(components).forEach((key) => {
     var name = key.replace(/(\w)/, (v) => v.toUpperCase()) //首字母大写

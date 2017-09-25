@@ -36,7 +36,7 @@
 		                </tr>
 	                </thead>
 	                <tbody>
-	                    <tr v-for="(item, index) in shopData.data">
+	                    <tr v-for="(item, index) in shopData.infos">
 	                    	<td>{{item.name}}</td>
 	                    	<td><img :src="item.icon" alt="" height="40"></td>
 	                    	<td>{{item.updateTime | formatDate}}</td>
@@ -62,9 +62,20 @@
 	        </div>
 	        <div style="font-size: 14px;margin-top: 20px;">
 	        	<div class="col-md-12 form-group">
+					<label for="" class="control-label col-md-3">店铺分类<span class="required">*</span></label>
+					<div class="fr col-md-9">
+						<select name="" id="" v-model="modalData.categoryId" class="form-control">
+							<option value="">请选择</option>
+							<option v-for="(item, index) in categoryList" :value="item._id">{{item.name}}</option>
+						</select>
+					</div>
+				</div>
+	        </div>
+	        <div style="font-size: 14px;margin-top: 20px;">
+	        	<div class="col-md-12 form-group">
 					<label for="" class="control-label col-md-3">店铺图标<span class="required">*</span></label>
 					<div class="fr col-md-9">
-						<upload :keyname="'modalData.icon'" :img="modalData.icon"></upload>
+						<upload :keyname="'modalData.icon'" :img="modalData.icon" :btnid="'shopIcon'"   ref="upload"></upload>
 					</div>
 				</div>
 	        </div>
@@ -74,7 +85,8 @@
 	        </div>
 	    </Modal>
 
-	    <Modal v-model="showDeleteFlg" title="确认操作" :closable="false">
+	    <Modal v-model="showDeleteFlg" :closable="false">
+	    	<div class="ivu-modal-header"><div class="ivu-modal-header-inner">确认操作</div></div>
 			您是否确定删除该店铺？
 			<div slot="footer">
 	            <div class="btn btn-primary" @click="submit()">确定</div>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -94,15 +106,17 @@
 import pagination from '@/components/pagination.vue'
 import upload from '@/components/upload.vue'
 import myDatepicker from 'vue-datepicker-simple/datepicker-2.vue';
-import { getShop,addShop,editShop,deleteShop } from '@/service/getData'
+import * as api from '@/service/getData'
 export default{
 	data() {
 		return {
-			shopData: [],
+			shopData: {},
+			categoryList: [],
 			filterOption: {
 				startDate: '',
 				endDate: ''
 			},
+			modalTitle: '',
 			modalData: {name: '', icon: ''},
 			opType: 'add',//弹窗 添加or修改or删除
 			showModalFlg: false,
@@ -115,14 +129,17 @@ export default{
 	    	this.opType = type
 	    	if(type=='modify'){
 	    		this.modalTitle = '修改'
-	    		this.modalData = this.littleCopy(item, ['_id', 'name', 'icon'])
+	    		this.$refs['upload'].clearimg(0)
+	    		this.modalData = this.littleCopy(item, ['_id', 'name', 'icon', 'categoryId'])
 	    		console.log(this.$children)
 	    	}
 	    	else{
 	    		this.modalTitle = '添加'
-	    		this.modalData = {name: '', icon: ''}
+	    		this.$refs['upload'].clearimg(0)
+	    		this.modalData = {name: '', icon: '', categoryId: ''}
 	    	}
 	    	this.showModalFlg = !this.showModalFlg
+	    	console.log(this.showModalFlg)
 	    },
 	    //删除确认
 	    deleteItem(type,item){
@@ -133,22 +150,25 @@ export default{
 	    //提交数据
 	    async submit(){
 	    	if(this.opType == 'modify'){
-	    		let res = await editShop(this.modalData);
+	    		let res = await api.editShop(this.modalData);
 	    		this.showModalFlg = !this.showModalFlg
 	    		this.getList()
 	    	}else if(this.opType == 'add'){
-	    		let res = await addShop(this.modalData);
+	    		let res = await api.addShop(this.modalData);
 	    		this.showModalFlg = !this.showModalFlg
 	    		this.getList()
 	    	}else{
-	    		let res = await deleteShop(this.modalData);
+	    		let res = await api.deleteShop(this.modalData);
 	    		this.showDeleteFlg = !this.showDeleteFlg
 	    		this.getList()
 	    	}
 	    },
 	    getList(){
-	    	getShop().then( res => {
-	    		this.shopData = res
+	    	api.getShop({pageIndex: 1,pageSize: 100}).then( res => {
+	    		this.shopData = res.data
+	    	})
+	    	api.getCategory().then(res=>{
+	    		this.categoryList = res.data
 	    	})
 	    }
 	},

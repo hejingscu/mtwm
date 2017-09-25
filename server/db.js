@@ -16,7 +16,8 @@ const ShopSchema = new Schema({
     discount: String,
     priceStart: Number,
     score: Number,
-    goods: Array
+    goods: Array,
+    categoryId: String
 })
 
 const bannerSchema = new Schema({

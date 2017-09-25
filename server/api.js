@@ -125,19 +125,24 @@ router.get('/mtwm/shop', (req, res) => {
   //分页请求
   var indexNum = parseInt(req.query.pageSize)*(parseInt(req.query.pageIndex-1)),
       pageSize = parseInt(req.query.pageSize),
-      rank = '' || req.query.rank
+      rank = '' || req.query.rank,
+      pageIndex = parseInt(req.query.pageIndex)
 
-  delete req.query.pageSize;delete req.query.pageIndex;
+  //delete req.query.pageSize;delete req.query.pageIndex;
   req.query == {} ? (params = null) : (params = req.query)
   //根据id查询的特殊情况
   if(req.query.id){params._id = req.query.id;delete params.id;}
-  db.Shop.find(params, 'name updateTime icon priceStart score discount', (err, doc) => {
+  if(params.pageSize){delete params.pageSize}
+  if(params.pageIndex){delete params.pageIndex}
+  db.Shop.find(params, 'name updateTime icon priceStart score discount categoryId', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      res.send(JSON.stringify(doc))
+      var totalData = doc.length
+      var totalPage = doc.length % pageSize === 0 ? parseInt(doc.length / pageSize) : (parseInt(doc.length / pageSize) + 1)
+      res.send({infos: doc.splice(indexNum,pageSize), pageIndex: pageIndex, pageSize: pageSize, totalData: totalData, totalPage: totalPage})
     }
-  }).limit(pageSize).skip(indexNum).sort({priceStart:1})
+  })
 })
 //店铺管理
 router.post('/mtwm-admin/shop/add', (req, res) => {
@@ -177,7 +182,7 @@ router.delete('/mtwm-admin/shop/delete/:id', (req, res) => {
 //配置商家信息
 router.get('/mtwm/shop/manage/:id', (req, res) => {
   const id = req.param('id');
-  db.Shop.find({_id: id}, 'priceStart score discount goods', (err, doc) => {
+  db.Shop.find({_id: id}, 'priceStart score discount goods name icon', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
@@ -185,9 +190,9 @@ router.get('/mtwm/shop/manage/:id', (req, res) => {
     }
   })
 })
-router.put('/mtwm-admin/shop/manage/edit', (req, res) => {
+router.put('/mtwm-admin/shop/manage/edit/:id', (req, res) => {
   const postData = req.body
-  const id = req.body._id;
+  const id = req.param('id');
   postData.updateTime = new Date().getTime()
   delete postData._id;
   db.Shop.update({_id: id},postData, (err, doc) => {
@@ -198,16 +203,67 @@ router.put('/mtwm-admin/shop/manage/edit', (req, res) => {
     }
   })
 })
+
+function uuid() {
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "";
+ 
+    var uuid = s.join("");
+    return uuid;
+}
 //添加商品
 router.post('/mtwm-admin/shop/manage/goods/add/:shopid', (req, res) => {
   const postData = req.body
   const shopid = req.param('shopid');
   postData.updateTime = new Date().getTime()
-  db.Shop.find({_id: shopid}, 'goods' ,(err, doc) => {
+  db.Shop.find({_id: shopid} ,(err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      doc[0].goods.push(postData)
+      var targetData = doc[0]
+      delete postData._id
+      postData.goodsId = uuid()
+      targetData.goods.push(postData)
+      db.Shop.update({_id: shopid},targetData, (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          res.send(JSON.stringify(doc))
+        }
+      })
+    }
+  })
+})
+//修改商品
+router.put('/mtwm-admin/shop/manage/goods/edit/:shopid', (req, res) => {
+  const postData = req.body
+  const shopid = req.param('shopid');
+  postData.updateTime = new Date().getTime()
+  db.Shop.find({_id: shopid} ,(err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      var docData = doc[0]
+      delete postData._id
+      for(var i=0;i<docData.goods.length;i++){
+        if(postData.goodsId == docData.goods[i].goodsId){
+          docData.goods[i] = postData
+          break;
+        }
+      }
+      db.Shop.update({_id: shopid},docData, (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          res.send(JSON.stringify(doc))
+        }
+      })
     }
   })
 })

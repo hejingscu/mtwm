@@ -10,6 +10,8 @@ import PageLogin from '@/pages/login.vue'
 
 import ShopDetail from '@/pages/shop/detail.vue'
 
+import PageTest from '@/pages/test.vue'
+
 Vue.use(Router)
 
 const routerPath = '/mtwm/dist/'
@@ -24,7 +26,8 @@ export default new Router({
 	    {path: routerPath + 'search',component: Search, meta: {requireAuth: true}},
 	    {path: routerPath + 'shop/detail',component: ShopDetail},
 	    {path: routerPath + 'order',component: PageOrder},
-	    {path: routerPath + 'mine',component: PageMine}
+	    {path: routerPath + 'mine',component: PageMine},
+	    {path: routerPath + 'test',component: PageTest}
 	 ],
   	scrollBehavior (to, from, savedPosition) {
 		return { x: 0, y: to.meta.savedPosition}
