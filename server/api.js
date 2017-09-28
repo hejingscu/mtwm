@@ -4,11 +4,10 @@ const router = express.Router()
 var expressJwt = require("express-jwt");
 const db = require('./db')
 var jwt = require('jsonwebtoken');
-const fn = () => {}
 const app = express()
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise;  
-app.use(expressJwt({secret: "secret"}).unless({path: ["/login"]}));
+//app.use(expressJwt({secret: "secret"}).unless({path: ["/login"]}));
 
 app.use(cookie())
 
@@ -134,13 +133,21 @@ router.get('/mtwm/shop', (req, res) => {
   if(req.query.id){params._id = req.query.id;delete params.id;}
   if(params.pageSize){delete params.pageSize}
   if(params.pageIndex){delete params.pageIndex}
+    console.log(params)
   db.Shop.find(params, 'name updateTime icon priceStart score discount categoryId', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      var totalData = doc.length
-      var totalPage = doc.length % pageSize === 0 ? parseInt(doc.length / pageSize) : (parseInt(doc.length / pageSize) + 1)
-      res.send({infos: doc.splice(indexNum,pageSize), pageIndex: pageIndex, pageSize: pageSize, totalData: totalData, totalPage: totalPage})
+      console.log(doc)
+      //if(indexNum === 0){
+        var totalData = doc.length
+        var totalPage = doc.length % pageSize === 0 ? parseInt(doc.length / pageSize) : (parseInt(doc.length / pageSize) + 1)
+        res.send({infos: doc.splice(indexNum,pageSize), pageIndex: pageIndex, pageSize: pageSize, totalData: totalData, totalPage: totalPage})
+      // }else{
+      //   setTimeout(function(){
+      //     res.send(504)
+      //   },10000)
+      // }
     }
   })
 })

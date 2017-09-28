@@ -16,9 +16,49 @@ cnpm run build  线上打包
 ### 项目结构
 
 admin/ 管理端
-server/  node服务提供数据
-src/  用户端
+server/  node服务端
+src/   用户端(暂不维护)
 
 ### 另外
 本项目用户端 用react也同样进行了实现，功能和此版本完全一样，仅用作react学习
 https://github.com/hejingscu/mtwm-react
+
+### 命令
+```bash
+npm run dev                 # 开发模式
+npm run build               # 打包编译
+```
+
+### 待解决问题
+```bash
+1.单独提供搜索接口供搜索栏使用
+```
+
+### 已解决问题
+```bash
+1.node服务端通过jwt给用户添加识别token
+```
+
+# 项目布局
+
+```
+.
+├── admin                                       // 后台管理系统（vue）
+├── build                                       // webpack配置文件
+├── config                                      // 环境参数配置
+├── dist                                        // 打包文件输出目录
+├── server                                      // Node.js提供数据接口
+├── src                                         // 项目主体
+│   ├── components                              // 通用组件
+│   ├── img                                     // 图片
+│   ├── pages                                   // 所有页面
+│   ├── router                                  // 路由配置
+│   ├── service                                 // api接口
+│   ├── utils                                   // 工具类
+│   ├── vuex                                    // vuex
+│   ├── App.vue                                 // 页面入口文件
+│   ├── main.js                                 // 程序入口文件，加载各种公共组件
+├── index.html                                  // 入口html文件
+
+```
+

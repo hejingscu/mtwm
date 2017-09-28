@@ -1,15 +1,12 @@
-const fs = require('fs')
-const path = require('path')
+
 const express = require('express')
-const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const db = require('./db')
-const resolve = file => path.resolve(__dirname, file)
 const api = require('./api')
-const app = express()
 
+const app = express()
 // const createBundleRenderer = require('vue-server-renderer').createBundleRenderer
 
 app.set('port', (process.env.port || 3000))
@@ -21,7 +18,6 @@ app.use(cors({
     methods:['GET','POST','PUT','DELETE'],
     alloweHeaders:['Content-Type','Content-Length', 'Authorization', 'Accept','X-Requested-With']
 }));
-app.use('/dist', express.static(resolve('../dist')))
 app.use(api)
 
 app.post('/api/setup', function (req, res) {
@@ -34,12 +30,12 @@ app.post('/api/setup', function (req, res) {
     .catch(() => res.status(500).end())
 })
 
-app.get('*', function (req, res) {
-  const fileName = db.initialized ? 'index.html' : 'index.html'
-  const html = fs.readFileSync(resolve('../' + fileName), 'utf-8')
-  // const html = fs.readFileSync(resolve('../setup.html'), 'utf-8')
-  res.send(html)
-})
+// app.get('*', function (req, res) {
+//   const fileName = db.initialized ? 'index.html' : 'index.html'
+//   const html = fs.readFileSync(resolve('../' + fileName), 'utf-8')
+//   // const html = fs.readFileSync(resolve('../setup.html'), 'utf-8')
+//   res.send(html)
+// })
 
 app.listen(app.get('port'), function () {
   console.log('Visit http://localhost:' + app.get('port'))
