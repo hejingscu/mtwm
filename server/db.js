@@ -13,11 +13,12 @@ const ShopSchema = new Schema({
     name: String,
     updateTime: Number,
     icon: String,
-    discount: String,
-    priceStart: Number,
-    score: Number,
+    discount: String,//优惠
+    priceStart: Number,//起送价
+    score: Number,//评分
     goods: Array,
-    categoryId: String
+    categoryId: String,
+    volume: Number//销量
 })
 
 const bannerSchema = new Schema({
@@ -34,14 +35,14 @@ const categorySchema = new Schema({
 
 const shopcartSchema = new Schema({
     phone: String,
-    list: Array,
-    totalAmount: Number
+    info: String
 })
 
 const orderSchema = new Schema({
     phone: String,
     list: Array,
-    totalAmount: Number
+    totalAmount: Number,
+    shopId: String
 })
 
 const Models = {
@@ -72,7 +73,7 @@ const initialize = function() {
 
 
 //mongoose.connect('mongodb://127.0.0.1/CMS2')
-mongoose.connect('mongodb://127.0.0.1/mtwm')
+mongoose.connect('mongodb://127.0.0.1/mtwm',{useMongoClient: true})
     // mongoose.set('debug', true)
 
 const db = mongoose.connection
@@ -85,5 +86,6 @@ db.once('open', function() {
     console.log('The database has connected.')
     initialize()
 })
+
 
 module.exports = Models

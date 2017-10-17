@@ -6,6 +6,7 @@ const db = require('./db')
 var jwt = require('jsonwebtoken');
 const app = express()
 const mongoose = require('mongoose')
+const co = require('co')
 mongoose.Promise = global.Promise;  
 //app.use(expressJwt({secret: "secret"}).unless({path: ["/login"]}));
 
@@ -88,13 +89,20 @@ router.post('/mtwm/order', (req, res) => {
   if(req.cookies.hjtoken){
     jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
       postData.phone = decoded.phone
-      db.Order.create(postData, (err, doc) => {
-        if (err) {
-          console.log(err)
-        } else if (doc) {
-          res.send(JSON.stringify(doc))
-        }
-      })
+      //异步处理逻辑
+      co(function *() {
+        //店铺销量+1
+        var res0 = yield db.Shop.update({_id: postData.shopId},{$inc:{volume:1}});
+        //添加订单
+        var res1 = yield db.Order.create(postData, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else if (doc) {
+            res.send(JSON.stringify(doc))
+          }
+        })
+        //清除购物车中的数据
+      });
     });
   }else{
     res.send(401, {code: 0, description: '您的登录状态已失效，请重新登录'})
@@ -117,6 +125,32 @@ router.get('/mtwm/order', (req, res) => {
   }
 })
 
+router.put('/mtwm/shopcart/modify', (req, res) => {
+  const postData = req.body
+  if(req.cookies.hjtoken){
+    jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
+      postData.phone = decoded.phone
+      //异步处理逻辑
+      co(function *() {
+        //店铺销量+1
+        var res0 = yield db.Shop.update({_id: postData.shopId},{$inc:{volume:1}});
+        //添加订单
+        var res1 = yield db.Order.create(postData, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else if (doc) {
+            res.send(JSON.stringify(doc))
+          }
+        })
+        //清除购物车中的数据
+      });
+    });
+  }else{
+    res.send(401, {code: 0, description: '您的登录状态已失效，请重新登录'})
+  }
+})
+
+
 //店铺api
 //店铺列表
 router.get('/mtwm/shop', (req, res) => {
@@ -128,26 +162,19 @@ router.get('/mtwm/shop', (req, res) => {
       pageIndex = parseInt(req.query.pageIndex)
 
   //delete req.query.pageSize;delete req.query.pageIndex;
+  //请求参数为空
   req.query == {} ? (params = null) : (params = req.query)
   //根据id查询的特殊情况
   if(req.query.id){params._id = req.query.id;delete params.id;}
   if(params.pageSize){delete params.pageSize}
   if(params.pageIndex){delete params.pageIndex}
-    console.log(params)
-  db.Shop.find(params, 'name updateTime icon priceStart score discount categoryId', (err, doc) => {
+  db.Shop.find(params, 'name updateTime icon priceStart score discount categoryId volume', (err, doc) => {
     if (err) {
       console.log(err)
     } else if (doc) {
-      console.log(doc)
-      //if(indexNum === 0){
         var totalData = doc.length
         var totalPage = doc.length % pageSize === 0 ? parseInt(doc.length / pageSize) : (parseInt(doc.length / pageSize) + 1)
         res.send({infos: doc.splice(indexNum,pageSize), pageIndex: pageIndex, pageSize: pageSize, totalData: totalData, totalPage: totalPage})
-      // }else{
-      //   setTimeout(function(){
-      //     res.send(504)
-      //   },10000)
-      // }
     }
   })
 })
@@ -186,6 +213,60 @@ router.delete('/mtwm-admin/shop/delete/:id', (req, res) => {
     }
   })
 })
+
+//获取用户购物车信息
+router.get('/mtwm/shop/cart', (req, res) => {
+  if(req.cookies.hjtoken){
+    jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
+      db.Shopcart.findOne({ phone: decoded.phone }, (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else if (doc) {
+          if(!doc){
+            db.Shopcart.create({phone: decoded.phone, info: "{}"}, (err, doc) => {
+              if (err) {
+                console.log(err)
+              } else if (doc) {
+                res.send({info: "{}"})
+              }
+            })
+          }else{
+            res.send(doc)
+          }
+        }
+      })
+    });
+  }else{
+    res.send({info: "{}"})
+  }
+})
+
+//更新用户购物车信息
+router.put('/mtwm/shop/cart/update', (req, res) => {
+  if(req.cookies.hjtoken){
+    jwt.verify(req.cookies.hjtoken, 'shh', function(err, decoded) {
+      //异步处理逻辑
+      co(function *() {
+        //获取用户购物车所有店铺数据
+        var res0 = yield db.Shopcart.findOne({phone: decoded.phone});
+        var userAllShopcart = JSON.parse(res0.info)//所有店铺的购物车
+        var curShopcart = userAllShopcart[req.body.shopid] || {}//当前店铺的购物车
+        curShopcart = req.body.list
+        userAllShopcart[req.body.shopid] = curShopcart//组装数据
+        console.log(JSON.stringify(userAllShopcart))
+        //改变用户购物车的值
+        var res1 = yield db.Shopcart.update({phone: decoded.phone},{info: JSON.stringify(userAllShopcart)}, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else if (doc) {
+            res.send("ok")
+          }
+        })
+      });
+    });
+  }
+})
+
 //配置商家信息
 router.get('/mtwm/shop/manage/:id', (req, res) => {
   const id = req.param('id');
