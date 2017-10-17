@@ -102,6 +102,10 @@ router.post('/mtwm/order', (req, res) => {
           }
         })
         //清除购物车中的数据
+        var res3 = yield db.Shopcart.findOne({phone: decoded.phone});
+        var userAllShopcart = JSON.parse(res3.info)
+        userAllShopcart[req.body.shopId] = []//将此店铺的购物车置空
+        var res4 = yield db.Shopcart.update({phone: decoded.phone},{info: JSON.stringify(userAllShopcart)})
       });
     });
   }else{
@@ -142,7 +146,6 @@ router.put('/mtwm/shopcart/modify', (req, res) => {
             res.send(JSON.stringify(doc))
           }
         })
-        //清除购物车中的数据
       });
     });
   }else{
@@ -241,6 +244,8 @@ router.get('/mtwm/shop/cart', (req, res) => {
   }
 })
 
+
+
 //更新用户购物车信息
 router.put('/mtwm/shop/cart/update', (req, res) => {
   if(req.cookies.hjtoken){
@@ -253,7 +258,6 @@ router.put('/mtwm/shop/cart/update', (req, res) => {
         var curShopcart = userAllShopcart[req.body.shopid] || {}//当前店铺的购物车
         curShopcart = req.body.list
         userAllShopcart[req.body.shopid] = curShopcart//组装数据
-        console.log(JSON.stringify(userAllShopcart))
         //改变用户购物车的值
         var res1 = yield db.Shopcart.update({phone: decoded.phone},{info: JSON.stringify(userAllShopcart)}, (err, doc) => {
           if (err) {
