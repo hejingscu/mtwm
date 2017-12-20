@@ -1,30 +1,31 @@
 <template lang="html">
   <div class="sidebar" style="font-size: 14px;">
       <ul class="root-item">
-            <li v-for="(item, index) in navList" class="li-nav">
-                  <a v-bind:href="item.url" @click="toggle(navList,index)" :class="{ current: item.isOpen }">
-                        <i class="fa fa-calendar"></i>
-                        {{item.text}}<!-- ---{{item.isOpen}} -->
-                        <div class="arrow" v-if="item.children">
-                              <i v-if="item.isOpen" class="fa fa-angle-down"></i>
-                              <i v-else class="fa fa-angle-right"></i>
-                        </div>
-                  </a>
-                  <transition name="slide-fade">
-                      <ul class="child-item ul-nav" v-if="item.children && item.isOpen">
-                              <li v-for="(child, index) in item.children" class="li-nav">
-                                    <a v-bind:href="child.url" @click="toggle(item.children,index)" :class="{ current: child.isOpen }">
-                                          <i class="fa fa-calendar"></i>{{child.text}}
-                                    </a>
-                              </li>
-                        </ul>
-                  </transition>
-            </li>
+        <li v-for="(item, index) in navList" class="li-nav">
+          <a v-bind:href="item.url" @click="toggle(navList,index)" :class="{ current: item.isOpen }">
+            <i class="fa" :class="{ 'fa-calendar': !item.iconEmpty, 'fa-android': item.icon }"></i>
+            {{item.text}}
+            <div class="arrow" v-if="item.children">
+              <i v-if="item.isOpen" class="fa fa-angle-down"></i>
+              <i v-else class="fa fa-angle-right"></i>
+            </div>
+          </a>
+          <transition name="slide-fade">
+            <ul class="child-item ul-nav" v-if="item.children && item.isOpen">
+              <li v-for="(child, index) in item.children" class="li-nav">
+                <a v-bind:href="child.url" @click="toggle(item.children,index)" :class="{ current: child.isOpen }">
+                  <i class="fa fa-circle"></i>{{child.text}}
+                </a>
+              </li>
+            </ul>
+          </transition>
+        </li>
       </ul>
   </div>
 </template>
 
 <script>
+import router from '../router'
 export default {
     data(){
       return {
@@ -42,20 +43,23 @@ export default {
     },
     methods: {
       toggle(list, index){
-        list.forEach( item => {
+        //点击非分隔栏时才进入循环
+        if(!list[index].iconEmpty){
+          list.forEach((item, listIndex) => {
+            if(index !== listIndex){
               item.isOpen = false
-        })
-        list[index].isOpen = !list[index].isOpen
+            }
+          })
+          list[index].isOpen = !list[index].isOpen
+        }
       },
+      //构建菜单栏
       createFun(){
         if(!!this.$route.path && this.$route.path !== '/'){
           for(let i = 0;i<this.navList.length;i++){
-            if(this.navList[i].url.indexOf(this.$route.path) !== -1){
-              this.navList[i].isOpen = true;
-            }
-            //console.log(('#' + this.$route.path),this.navList[i].url)
             if(('#' + this.$route.path).indexOf(this.navList[i].url) !== -1){
               this.navList[i].isOpen = true;
+              //针对三级菜单,目前最多允许三级菜单（如列表下的详情页，详情页tab在左导航是不存在的，但在页面的头部面包屑导航中存在 首页●xx列表页●xx详情页）
               if(('#' + this.$route.path) !== this.navList[i].url){
                 this.$store.dispatch("changeParentBarNode",this.navList[i])
               }
@@ -65,6 +69,7 @@ export default {
                 if(('#' + this.$route.path).indexOf(this.navList[i].children[j].url) !== -1){
                   this.navList[i].children[j].isOpen = true;
                   this.navList[i].isOpen = true;
+                  //同上
                   if(('#' + this.$route.path) !== this.navList[i].children[j].url){
                     this.$store.dispatch("changeParentBarNode",this.navList[i].children[j])
                   }
@@ -77,13 +82,44 @@ export default {
           firstRouter.isOpen = true
           this.$router.push(firstRouter.url.substring(1))
         }
+      },
+      //切换顶部大导航
+      changeMainMenu(str){
+        switch(str.split('/')[1]){
+          case 'ecard': 
+            this.navList = this.ecardNavList
+            break;
+          case 'checkstand': 
+            this.navList = this.checkstandNavList
+            break;
+          default: 
+            break;
+        }
       }
     },
     created: function(){
-      console.log(this.$route)
+      let that = this
+      this.changeMainMenu(window.location.hash)
+      //每次路由变更时做一些事情
+      router.beforeEach((to, from, next) => {
+        if(to.path.split("/")[1] !== from.path.split("/")[1]){
+          this.changeMainMenu(to.path)
+        }else{
+          that.navList.forEach( item => {
+            item.isOpen = false
+            if(item.children){
+              item.children.forEach( childItem =>{
+                childItem.isOpen = false
+              })
+            }
+          })  
+        }
+        next()
+      })
       this.createFun()
     },
     watch: {
+      //路由变化时重新构建菜单栏
       '$route.path': {
         handler(newVal,oldVal){
           this.createFun()

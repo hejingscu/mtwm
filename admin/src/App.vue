@@ -160,6 +160,7 @@ a{
 .fr{float: right;}
 .f-s-24{font-size: 24px;}
 .w80{width: 80%;}
+.w40{width: 40% !important;}
 
 .fa{margin-right: 14px;}
 .ivu-modal-footer{

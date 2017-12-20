@@ -13,11 +13,14 @@ const ShopSchema = new Schema({
     name: String,
     updateTime: Number,
     icon: String,
-    discount: String,//优惠
+    discount: Array,//优惠
     priceStart: Number,//起送价
     score: Number,//评分
     goods: Array,
     categoryId: String,
+    deliverTime: Number,
+    personPrice: Number,//人均
+    deliverPrice: Number,//配送费
     volume: Number//销量
 })
 
@@ -41,8 +44,14 @@ const shopcartSchema = new Schema({
 const orderSchema = new Schema({
     phone: String,
     list: Array,
-    totalAmount: Number,
-    shopId: String
+    totalAmount: Number,//商品总额
+    deliverPrice: Number,//配送费
+    orderAmount: Number,//订单总额
+    payAmount: Number,//实付金额
+    shopId: String,
+    tradeTime: Number,
+    deliverTime: Number,
+    shopName: String
 })
 
 const Models = {

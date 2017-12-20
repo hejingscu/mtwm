@@ -3,6 +3,7 @@
     <div class="form-group col-md-12 text-center">
       <div class="col-md-5 modify-form">
         <h4>店铺基本信息</h4>
+        {{formData}}
         <div class="input-group">
           <label for="" style="margin-right: 20px;">店铺名称</label>{{mainData.name}}
         </div>
@@ -11,12 +12,27 @@
           <input type="text" class="form-control" v-model="formData.priceStart">
         </div>
         <div class="input-group">
+          <label for="" class="input-group-addon">配送费</label>
+          <input type="text" class="form-control" v-model="formData.deliverPrice">
+        </div>
+        <div class="input-group">
+          <label for="" class="input-group-addon">人均</label>
+          <input type="text" class="form-control" v-model="formData.personPrice">
+        </div>
+        <div class="input-group">
           <label for="" class="input-group-addon">评分</label>
           <input type="text" class="form-control" v-model="formData.score">
         </div>
         <div class="input-group">
+          <label for="" class="input-group-addon">配送时间</label>
+          <input type="text" class="form-control" v-model="formData.deliverTime">
+        </div>
+        <div class="input-group">
+          <span style="margin: 0 100px;">满</span><span style="margin: 0 100px;">减</span>
+        </div>
+        <div class="input-group">
           <label for="" class="input-group-addon">优惠</label>
-          <input type="text" class="form-control" v-model="formData.discount">
+          <input type="text" class="form-control w40" v-model="formData.discount[0].priceStart">&nbsp;&nbsp;&nbsp;<input type="text" class="w40 form-control" v-model="formData.discount[0].discountPrice">
         </div>
         <a href="javascript:;" class="btn btn-primary" @click="submit()">提交</a>
       </div>
@@ -104,7 +120,7 @@ export default{
       opType: 'add',
       goodsData: [],
       cacheGoodsData: {},
-      itemGoods: {icon: '', name: '', price: '', isEdit: true},
+      itemGoods: {icon: '', name: '', price: '',isEdit: true},
       goodsFormData: {name: '', icon: '', price: ''}
     }
   },
@@ -119,8 +135,12 @@ export default{
       let that = this
       getShopManage({id: that.$route.query.id}).then( res => {
         that.mainData = res.data
-        that.formData = that.littleCopy(res.data, ['priceStart', 'score', 'discount', "_id"])
+        that.formData = that.littleCopy(res.data, ['priceStart', 'score', 'discount',"deliverTime", "_id", "personPrice", 'deliverPrice'])
         that.goodsData = res.data.goods
+        if(!res.data.discount){
+          that.formData.discount = [{priceStart: 0, dicountPrice: 0}]
+        }
+        console.log(that.formData)
       })
     },
     addGoods(){

@@ -67,7 +67,7 @@ import { getQiniuToken } from '@/service/getData'
       },
       btnid: {
         type: String,
-        default: ''
+        default: '' || 'btnid'
       }
     },
     data() {
