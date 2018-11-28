@@ -3,69 +3,22 @@ const init = require('./init.json')
 const Schema = mongoose.Schema
 mongoose.Promise = global.Promise;
 
-const userSchema = new Schema({
-    phone: String,
-    password: String,
-    registerTime: Number
-})
 
-const ShopSchema = new Schema({
+const heroSchema = new Schema({
     name: String,
-    updateTime: Number,
-    icon: String,
-    discount: Array,//优惠
-    priceStart: Number,//起送价
-    score: Number,//评分
-    goods: Array,
-    categoryId: String,
-    deliverTime: Number,
-    personPrice: Number,//人均
-    deliverPrice: Number,//配送费
-    volume: Number//销量
+    chuzhuang: Array,
+    mingwen: String,
+    heroId: String
 })
 
-const bannerSchema = new Schema({
-    img: String,
-    updateTime: Number,
-    remark: String
-})
-
-const categorySchema = new Schema({
-    icon: String,
-    updateTime: Number,
-    name: String
-})
-
-const shopcartSchema = new Schema({
-    phone: String,
-    info: String
-})
-
-const orderSchema = new Schema({
-    phone: String,
-    list: Array,
-    totalAmount: Number,//商品总额
-    deliverPrice: Number,//配送费
-    orderAmount: Number,//订单总额
-    payAmount: Number,//实付金额
-    shopId: String,
-    tradeTime: Number,
-    deliverTime: Number,
-    shopName: String
-})
 
 const Models = {
-    User: mongoose.model('User', userSchema),
-    Shop: mongoose.model('Shop', ShopSchema),
-    Banner: mongoose.model('Banner', bannerSchema),
-    Category: mongoose.model('Category', categorySchema),
-    Shopcart: mongoose.model('Shopcart', shopcartSchema),
-    Order: mongoose.model('Order', orderSchema),
+    Hero: mongoose.model('Hero', heroSchema),
     initialized: false
 }
 
 const initialize = function() {
-    Models.Shop.find(null, function(err, doc) {
+    Models.Hero.find(null, function(err, doc) {
         if (err) {
             console.log(err)
         } else if (!doc.length) {
